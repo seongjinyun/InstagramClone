@@ -16,8 +16,12 @@ public class UserDetail {
 
     // 식별 1:1 관계 설정
     @Id
+    @Column(name = "userId")
+    private Long userId;
+
     @OneToOne
-    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    @MapsId
+    @JoinColumn(name = "userId")
     private User user;
 
     @Column(name = "password")

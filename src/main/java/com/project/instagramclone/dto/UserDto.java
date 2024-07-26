@@ -1,13 +1,11 @@
 package com.project.instagramclone.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.project.instagramclone.entity.UserDetail;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import com.project.instagramclone.entity.User;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -35,12 +33,19 @@ public class UserDto {
     @Size(min = 3, max = 50)
     private String email;
 
-    public static UserDto from(User user) {
+    @NotNull
+    private int sns_id;
+
+    public static UserDto from(User user, UserDetail userDetail) {
         if(user == null) return null;
 
         return UserDto.builder()
-                .username(user.getUsername())
+                .uid(user.getUid())
+                .password(userDetail.getPassword())
                 .nickname(user.getNickname())
+                .email(user.getEmail())
+                .sns_id(user.getSns().getSnsId())
+                // 회원 가입 시 프로필 이미지는 추가하지 않음. 나중에 회원정보 수정 시 처리
                 .build();
     }
 }

@@ -5,13 +5,18 @@ spring:
       enabled: true
 
   datasource:
+    # H2 DB 메모리 상에서 사용
     url: jdbc:h2:mem:instagramclone
+    # 접속을 위한 드라이버
     driver-class-name: org.h2.Driver
+    # SpringBoot 2.4부터 username 필수
     username: sa
     password:
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+    # create: 객체를 통해 자동 테이블 생성
+    # drop: 종료 시 테이블 삭제
     hibernate:
       ddl-auto: create-drop
     properties:
@@ -19,7 +24,14 @@ spring:
         format_sql: true
         show_sql: true
     defer-datasource-initialization: true
+  
+  # 콘솔 확인
+  output:
+    ansi:
+      enabled: always
 
 logging:
   level:
     com.project: DEBUG
+    # 파라미터 확인
+    org.hibernate.type: trace
