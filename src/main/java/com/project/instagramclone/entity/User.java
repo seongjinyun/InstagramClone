@@ -6,7 +6,7 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Data
 @Builder
 @AllArgsConstructor
@@ -31,6 +31,7 @@ public class User {
     private boolean activated;
 
     // 비식별 1:N 관계 설정
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<SnsRole> snsRole; // 여러 Order 엔티티와 1:N 관계
+    @ManyToOne
+    @JoinColumn(name = "snsId")
+    private Sns sns;
 }
