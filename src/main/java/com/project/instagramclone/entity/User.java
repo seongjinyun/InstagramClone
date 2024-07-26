@@ -3,11 +3,13 @@ package com.project.instagramclone.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "user")
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,5 +34,9 @@ public class User {
 
     // 비식별 1:N 관계 설정
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<SnsRole> snsRole; // 여러 Order 엔티티와 1:N 관계
+    private List<SnsRole> snsRoles = new ArrayList<>();
+
+    // 식별 1:1 관계 설정
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private UserDetail userDetail;
 }

@@ -39,8 +39,16 @@ public class UserDto {
         if(user == null) return null;
 
         return UserDto.builder()
-                .username(user.getUsername())
+                .uid(user.getUid())
                 .nickname(user.getNickname())
+                .build();
+    }
+    public static User toEntity(UserDto userDto) {
+        return User.builder()
+                .uid(userDto.getUid())
+                .nickname(userDto.getNickname())
+                .email(userDto.getEmail())
+                .activated(true) // 회원가입 시 기본으로 활성화 설정
                 .build();
     }
 }

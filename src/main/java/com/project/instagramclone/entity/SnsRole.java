@@ -19,4 +19,7 @@ public class SnsRole {
     @Column(name = "snsName", length = 10, unique = true)
     private String snsName;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
