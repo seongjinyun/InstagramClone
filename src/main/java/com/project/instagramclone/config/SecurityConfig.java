@@ -43,7 +43,7 @@ public class SecurityConfig {
 
                 // HttpServletRequest를 사용하는 요청에 대한 접근제한 설정
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers("/api/hello", "/api/authenticate","/api/signup").permitAll() // 로그인과 토큰 요청 시 토큰이 없기에 허용
+                        .requestMatchers("/api/signup").permitAll() // 로그인과 토큰 요청 시 토큰이 없기에 허용
                         .requestMatchers(PathRequest.toH2Console()).permitAll() // H2콘솔 허용
                         // .anyRequest().permitAll()
                         .anyRequest().authenticated() // 나머지 요청에 대해서 인증 필요

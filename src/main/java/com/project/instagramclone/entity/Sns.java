@@ -4,12 +4,12 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "SnsRole")
+@Table(name = "Sns")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SnsRole {
+public class Sns {
 
     @Id
     @Column(name = "snsId")

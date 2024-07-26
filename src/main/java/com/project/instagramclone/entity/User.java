@@ -30,7 +30,8 @@ public class User {
     @Column(name = "activated")
     private boolean activated;
 
-//    // 비식별 1:N 관계 설정
-//    @OneToMany(mappedBy = "snsId", cascade = CascadeType.ALL)
-//    private List<SnsRole> snsRole; // 여러 Order 엔티티와 1:N 관계
+    // 비식별 1:N 관계 설정
+    @ManyToOne
+    @JoinColumn(name = "snsId")
+    private Sns sns;
 }
