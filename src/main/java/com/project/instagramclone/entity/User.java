@@ -1,9 +1,10 @@
 package com.project.instagramclone.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "users")
@@ -34,4 +35,6 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "snsId")
     private Sns sns;
+
+
 }

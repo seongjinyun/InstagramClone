@@ -13,6 +13,16 @@ spring:
     username: sa
     password:
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - profile
+              - email
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     # create: 객체를 통해 자동 테이블 생성
