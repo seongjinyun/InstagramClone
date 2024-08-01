@@ -1,5 +1,6 @@
 package com.project.instagramclone.oauth2;
 
+import com.project.instagramclone.dto.UserDto;
 import com.project.instagramclone.entity.User;
 import com.project.instagramclone.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,9 +9,6 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -18,32 +16,56 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
 
-    @Transactional
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        //1. 유저 정보(attributes) 가져오기
-        Map<String, Object> oAuth2UserAttributes = super.loadUser(userRequest).getAttributes();
 
-        //2. registrationId 가져오기
+        OAuth2User oAuth2User = super.loadUser(userRequest);
+
+        System.out.println(oAuth2User);
+
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        OAuth2Response oAuth2Response = null;
+        if (registrationId.equals("google")) {
 
-        //3. userNameAttributeName 가져오기
-        String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails()
-                .getUserInfoEndpoint().getUserNameAttributeName();
+            oAuth2Response = new GoogleResponse(oAuth2User.getAttributes());
+        }
+        else {
 
-        // 4. 유저 정보 dto 생성
-        OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfo.of(registrationId, oAuth2UserAttributes);
+            return null;
+        }
 
-        // 5. 회원가입 및 로그인
-        User user = getOrSave(oAuth2UserInfo);
+        // 오류 = user entity에 username이 없음
+        // username을 nickname으로 바꾸거나, username을 추가
 
-        // 6. OAuth2User로 반환
-        return new PrincipalDetails(user, oAuth2UserAttributes, userNameAttributeName);
-    }
+        //리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬
+        String username = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
+        User existData = userRepository.findByNickname(username);
 
-    private User getOrSave(OAuth2UserInfo oAuth2UserInfo) {
-        User user = userRepository.findByUid(oAuth2UserInfo.())
-                .orElseGet(oAuth2UserInfo::toEntity);
-        return userRepository.save(user);
+        if(existData == null){
+            User user = new User();
+            user.setNickname(username);
+            user.setEmail(oAuth2Response.getEmail());
+
+            userRepository.save(user);
+
+            UserDto userDTO = new UserDto();
+            userDTO.setNickname(username);
+            userDTO.setEmail(oAuth2Response.getEmail());
+
+            return new CustomOAuth2User(userDTO);
+        }
+        else {
+            existData.setEmail(oAuth2Response.getEmail());
+            existData.setNickname(oAuth2Response.getName());
+
+            userRepository.save(existData);
+
+            UserDto userDTO = new UserDto();
+            userDTO.setNickname(existData.getNickname());
+            userDTO.setEmail(oAuth2Response.getEmail());
+
+            return new CustomOAuth2User(userDTO);
+        }
+
     }
 }
