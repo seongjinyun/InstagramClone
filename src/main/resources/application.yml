@@ -18,10 +18,12 @@ spring:
       client:
         registration:
           google:
+            #github push 불가능, id, secret key 제거 후 커밋
+            #추후에 github에서 따로 설정 필요
             client-name: ${google}
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
-            redirect-uri: http://localhost:8080/test
+            client-id:
+            client-secret:
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
             authorization-grant-type: authorization_code
             scope:
               - profile
@@ -48,3 +50,4 @@ logging:
     com.project: DEBUG
     # 파라미터 확인
     org.hibernate.type: trace
+    org.springframework.security: DEBUG

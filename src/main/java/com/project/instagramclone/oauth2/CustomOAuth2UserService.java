@@ -1,7 +1,9 @@
 package com.project.instagramclone.oauth2;
 
 import com.project.instagramclone.dto.UserDto;
+import com.project.instagramclone.entity.Sns;
 import com.project.instagramclone.entity.User;
+import com.project.instagramclone.repository.SnsRepository;
 import com.project.instagramclone.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -15,13 +17,17 @@ import org.springframework.stereotype.Service;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
+    private final SnsRepository snsRepository;
 
+    //http://localhost:8080/oauth2/authorization/google 이 주소로 접속해야 로그인 했을 때 DB 저장되는 것 같음
+    
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        System.out.println("loadUser 실행됨");
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        System.out.println(oAuth2User);
+        System.out.println("OAuth2User: " + oAuth2User);
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         OAuth2Response oAuth2Response = null;
@@ -34,36 +40,39 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return null;
         }
 
-        // 오류 = user entity에 username이 없음
-        // username을 nickname으로 바꾸거나, username을 추가
 
         //리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬
-        String username = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
-        User existData = userRepository.findByNickname(username);
+        String nickname = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
+        User existData = userRepository.findByNickname(nickname).orElse(null);
 
-        if(existData == null){
+        if (existData == null) {
+            Sns sns = snsRepository.findById(2).orElseThrow(() -> new IllegalArgumentException("SNS 정보가 없습니다."));
             User user = new User();
-            user.setNickname(username);
+            user.setUid(oAuth2Response.getProviderId());
+            user.setNickname(nickname);
             user.setEmail(oAuth2Response.getEmail());
-
+            user.setSns(sns);
             userRepository.save(user);
+            System.out.println("로그인 성공, DB 저장 완료");
 
-            UserDto userDTO = new UserDto();
-            userDTO.setNickname(username);
-            userDTO.setEmail(oAuth2Response.getEmail());
-
+            UserDto userDTO = UserDto.builder()
+                    .uid(oAuth2Response.getProviderId())
+                    .nickname(nickname)
+                    .email(oAuth2Response.getEmail())
+                    .sns_id(sns.getSnsId())
+                    .build();
             return new CustomOAuth2User(userDTO);
-        }
-        else {
+        } else {
             existData.setEmail(oAuth2Response.getEmail());
-            existData.setNickname(oAuth2Response.getName());
-
             userRepository.save(existData);
+            System.out.println("로그인 성공, DB 갱신 완료");
 
-            UserDto userDTO = new UserDto();
-            userDTO.setNickname(existData.getNickname());
-            userDTO.setEmail(oAuth2Response.getEmail());
-
+            UserDto userDTO = UserDto.builder()
+                    .uid(existData.getUid())
+                    .nickname(existData.getNickname())
+                    .email(oAuth2Response.getEmail())
+                    .sns_id(existData.getSns().getSnsId())
+                    .build();
             return new CustomOAuth2User(userDTO);
         }
 
