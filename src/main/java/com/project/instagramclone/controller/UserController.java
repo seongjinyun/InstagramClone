@@ -1,12 +1,11 @@
 package com.project.instagramclone.controller;
 
+import com.project.instagramclone.dto.UserDto;
+import com.project.instagramclone.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import com.project.instagramclone.dto.UserDto;
-import com.project.instagramclone.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -25,5 +24,16 @@ public class UserController {
             @Valid @RequestBody UserDto userDto
     ) {
         return ResponseEntity.ok(userService.signup(userDto));
+    }
+
+    @GetMapping("/oauth/google/login")
+    public ResponseEntity<String> login(
+            @RequestParam String sns_id,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws IOException {
+        // OAuth 로그인 성공시 UserDto를 반환
+        return ResponseEntity.ok("완료");
+        //return null;
     }
 }

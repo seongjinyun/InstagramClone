@@ -13,6 +13,21 @@ spring:
     username: sa
     password:
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            #github push 불가능, id, secret key 제거 후 커밋
+            #추후에 github에서 따로 설정 필요
+            client-name: ${google}
+            client-id:
+            client-secret:
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            authorization-grant-type: authorization_code
+            scope:
+              - profile
+              - email
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     # create: 객체를 통해 자동 테이블 생성
@@ -35,3 +50,4 @@ logging:
     com.project: DEBUG
     # 파라미터 확인
     org.hibernate.type: trace
+    org.springframework.security: DEBUG
