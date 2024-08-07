@@ -51,3 +51,6 @@ logging:
     # 파라미터 확인
     org.hibernate.type: trace
     org.springframework.security: DEBUG
+
+jwt:
+  secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
