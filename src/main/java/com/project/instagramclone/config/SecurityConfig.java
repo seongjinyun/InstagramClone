@@ -26,12 +26,15 @@ public class SecurityConfig {
     private final CustomOAuth2UserService auth2UserService;
 
     private final CorsFilter corsFilter;
-/* @RequiredArgsConstructor 어노테이션 사용으로 주석처리 함
+
+    /*
+    @RequiredArgsConstructor 어노테이션 사용으로 주석처리 함
     public SecurityConfig( // 생성한 클래스들을 주입받음
-                           CorsFilter corsFilter
+        CorsFilter corsFilter
     ) {
         this.corsFilter = corsFilter;
-    }*/
+    }
+    */
 
     @Bean
     public PasswordEncoder passwordEncoder() {

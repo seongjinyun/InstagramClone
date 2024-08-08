@@ -22,7 +22,7 @@ spring:
             #추후에 github에서 따로 설정 필요
             client-name: ${google}
             client-id:
-            client-secret:
+            client-secret: 
             redirect-uri: http://localhost:8080/login/oauth2/code/google
             authorization-grant-type: authorization_code
             scope:

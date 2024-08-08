@@ -7,17 +7,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "users")
+@Table(name = "member")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
-
+public class Member {
     @Id
-    @Column(name = "userId")
+    @Column(name = "memberId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long memberId;
 
     @Column(name = "uid")
     private String uid;
@@ -35,6 +34,4 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "snsId")
     private Sns sns;
-
-
 }

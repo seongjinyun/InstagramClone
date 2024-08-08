@@ -1,6 +1,6 @@
 package com.project.instagramclone.oauth2;
 
-import com.project.instagramclone.dto.UserDto;
+import com.project.instagramclone.dto.SignUpDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -10,16 +10,14 @@ import java.util.Map;
 
 public class CustomOAuth2User implements OAuth2User {
 
-    private final UserDto userDTO;
+    private final SignUpDto signUpDTO;
 
-    public CustomOAuth2User(UserDto userDTO) {
-
-        this.userDTO = userDTO;
+    public CustomOAuth2User(SignUpDto signUpDTO) {
+        this.signUpDTO = signUpDTO;
     }
 
     @Override
     public Map<String, Object> getAttributes() {
-
         return null;
     }
 
@@ -31,12 +29,10 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public String getName() {
-
-        return userDTO.getNickname();
+        return signUpDTO.getNickname();
     }
 
     public String getUsername() {
-
-        return userDTO.getEmail();
+        return signUpDTO.getEmail();
     }
 }

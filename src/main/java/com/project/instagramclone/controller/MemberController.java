@@ -1,7 +1,7 @@
 package com.project.instagramclone.controller;
 
-import com.project.instagramclone.dto.UserDto;
-import com.project.instagramclone.service.UserService;
+import com.project.instagramclone.dto.SignUpDto;
+import com.project.instagramclone.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -12,18 +12,18 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api")
-public class UserController {
-    private final UserService userService;
+public class MemberController {
+    private final MemberService memberService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public MemberController(MemberService memberService) {
+        this.memberService = memberService;
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<UserDto> signup(
-            @Valid @RequestBody UserDto userDto
+    public ResponseEntity<SignUpDto> signup(
+            @Valid @RequestBody SignUpDto signUpDto
     ) {
-        return ResponseEntity.ok(userService.signup(userDto));
+        return ResponseEntity.ok(memberService.signup(signUpDto));
     }
 
     @GetMapping("/oauth/google/login")

@@ -1,10 +1,10 @@
 package com.project.instagramclone.repository;
 
-import com.project.instagramclone.entity.UserDetail;
+import com.project.instagramclone.entity.MemberDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserDetailRepository extends JpaRepository<UserDetail, Long> {
+public interface MemberDetailRepository extends JpaRepository<MemberDetail, Long> {
 
 }
