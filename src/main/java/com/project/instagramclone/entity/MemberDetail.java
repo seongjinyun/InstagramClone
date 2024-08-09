@@ -7,22 +7,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "userDetail")
+@Table(name = "memberDetail")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDetail {
+public class MemberDetail {
 
     // 식별 1:1 관계 설정
     @Id
-    @Column(name = "userId")
-    private Long userId;
+    @Column(name = "memberId")
+    private Long memberId;
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "userId")
-    private User user;
+    @JoinColumn(name = "memberId")
+    private Member member;
 
     @Column(name = "password")
     private String password;
