@@ -6,17 +6,19 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
 
 @Component
+@PropertySource("classpath:application.yml")
 public class JWTUtil {
 
     private Key key;
 
-    public JWTUtil(@Value("${spring.jwt.secret}") String secret) {
+    public JWTUtil(@Value("${jwt.secret}") String secret) {
 
 
         byte[] byteSecretKey = Decoders.BASE64.decode(secret);
