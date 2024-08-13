@@ -1,6 +1,6 @@
 package com.project.instagramclone.oauth2;
 
-import com.project.instagramclone.dto.SignUpDto;
+import com.project.instagramclone.dto.UserDto;
 import com.project.instagramclone.entity.Member;
 import com.project.instagramclone.entity.Sns;
 import com.project.instagramclone.repository.SnsRepository;
@@ -52,25 +52,25 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             memberRepository.save(member);
             System.out.println("로그인 성공, DB 저장 완료");
 
-            SignUpDto signUpDTO = SignUpDto.builder()
+            UserDto userDTO = UserDto.builder()
                     .uid(oAuth2Response.getProviderId())
                     .nickname(nickname)
                     .email(oAuth2Response.getEmail())
                     .sns_id(sns.getSnsId())
                     .build();
-            return new CustomOAuth2User(signUpDTO);
+            return new CustomOAuth2User(userDTO);
         } else {
             existData.setEmail(oAuth2Response.getEmail());
             memberRepository.save(existData);
             System.out.println("로그인 성공, DB 갱신 완료");
 
-            SignUpDto signUpDTO = SignUpDto.builder()
+            UserDto userDTO = UserDto.builder()
                     .uid(existData.getUid())
                     .nickname(existData.getNickname())
                     .email(oAuth2Response.getEmail())
                     .sns_id(existData.getSns().getSnsId())
                     .build();
-            return new CustomOAuth2User(signUpDTO);
+            return new CustomOAuth2User(userDTO);
         }
     }
 }

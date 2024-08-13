@@ -21,8 +21,8 @@ spring:
             #github push 불가능, id, secret key 제거 후 커밋
             #추후에 github에서 따로 설정 필요
             client-name: ${google}
-            client-id:
-            client-secret: 
+            client-id: 512715815216-f6adgjebvgdh15vjsmth5o1ub1jnfi5t.apps.googleusercontent.com
+            client-secret: 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
             redirect-uri: http://localhost:8080/login/oauth2/code/google
             authorization-grant-type: authorization_code
             scope:
@@ -51,3 +51,10 @@ logging:
     # 파라미터 확인
     org.hibernate.type: trace
     org.springframework.security: DEBUG
+
+jwt:
+  header: Authorization
+  #HS512
+  #echo 'instagram-clone-project-spring-boot-jwt-secret-instagram-clone-project-spring-boot-jwt-secret'|base64
+  secret: aW5zdGFncmFtLWNsb25lLXByb2plY3Qtc3ByaW5nLWJvb3Qtand0LXNlY3JldC1pbnN0YWdyYW0tY2xvbmUtcHJvamVjdC1zcHJpbmctYm9vdC1qd3Qtc2VjcmV0
+  token-validity-in-seconds: 86400

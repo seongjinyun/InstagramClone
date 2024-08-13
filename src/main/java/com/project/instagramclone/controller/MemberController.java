@@ -1,6 +1,6 @@
 package com.project.instagramclone.controller;
 
-import com.project.instagramclone.dto.SignUpDto;
+import com.project.instagramclone.dto.UserDto;
 import com.project.instagramclone.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,10 +20,10 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<SignUpDto> signup(
-            @Valid @RequestBody SignUpDto signUpDto
+    public ResponseEntity<UserDto> signup(
+            @Valid @RequestBody UserDto userDto
     ) {
-        return ResponseEntity.ok(memberService.signup(signUpDto));
+        return ResponseEntity.ok(memberService.signup(userDto));
     }
 
     @GetMapping("/oauth/google/login")

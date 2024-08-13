@@ -12,7 +12,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignUpDto {
+public class UserDto {
 
     // 회원가입 시 사용
 
@@ -36,10 +36,10 @@ public class SignUpDto {
     @NotNull
     private int sns_id;
 
-    public static SignUpDto from(Member member, MemberDetail memberDetail) {
+    public static UserDto from(Member member, MemberDetail memberDetail) {
         if(member == null) return null;
 
-        return SignUpDto.builder()
+        return UserDto.builder()
                 .uid(member.getUid())
                 .password(memberDetail.getPassword())
                 .nickname(member.getNickname())
