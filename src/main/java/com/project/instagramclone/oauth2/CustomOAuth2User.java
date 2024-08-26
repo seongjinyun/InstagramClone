@@ -1,21 +1,19 @@
 package com.project.instagramclone.oauth2;
 
-import com.project.instagramclone.dto.SignUpDto;
+import com.project.instagramclone.dto.oauth.OAuth2UserDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
+@RequiredArgsConstructor
 public class CustomOAuth2User implements OAuth2User {
+    private final OAuth2UserDto oAuth2UserDto;
 
-    private final SignUpDto signUpDTO;
-
-    public CustomOAuth2User(SignUpDto signUpDTO) {
-        this.signUpDTO = signUpDTO;
-    }
-
+    // 통일 x -> return null
     @Override
     public Map<String, Object> getAttributes() {
         return null;
@@ -23,16 +21,25 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // 빈 컬렉션을 반환하여 role 값을 가져오지 않도록 설정
-        return Collections.emptyList();
+        Collection<GrantedAuthority> collection = new ArrayList<>();
+        collection.add(new GrantedAuthority() {
+            @Override
+            public String getAuthority() {
+                return oAuth2UserDto.getRole();
+            }
+        });
+        return collection;
     }
 
     @Override
     public String getName() {
-        return signUpDTO.getNickname();
+        return oAuth2UserDto.getName();
     }
 
-    public String getUsername() {
-        return signUpDTO.getEmail();
+    public String getUsername(){
+        return oAuth2UserDto.getUsername();
+    }
+    public String getEmail(){
+        return oAuth2UserDto.getEmail();
     }
 }

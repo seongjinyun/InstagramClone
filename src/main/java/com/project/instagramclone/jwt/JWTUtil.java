@@ -2,50 +2,52 @@ package com.project.instagramclone.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
-@PropertySource("classpath:application.yml")
 public class JWTUtil {
-
-    private Key key;
+    private final SecretKey secretKey;
 
     public JWTUtil(@Value("${jwt.secret}") String secret) {
-
-
-        byte[] byteSecretKey = Decoders.BASE64.decode(secret);
-        key = Keys.hmacShaKeyFor(byteSecretKey);
+        String algorithm = Jwts.SIG.HS256.key().build().getAlgorithm();
+        System.out.println("algorithm = " + algorithm);
+        secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public String getUsername(String token) {
-
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().get("nickname", String.class);
+    private Claims getPayload(String token){
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
     }
 
-
-    public Boolean isExpired(String token) {
-
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getExpiration().before(new Date());
+    public String getUsername(String token){
+        return getPayload(token).get("username", String.class);
     }
 
-    public String createJwt(String nickname, Long expiredMs) {
+    public String getRole(String token){
+        return getPayload(token).get("role", String.class);
+    }
 
-        Claims claims = Jwts.claims();
-        claims.put("nickname", nickname);
+    public String getCategory(String token){
+        return getPayload(token).get("category", String.class);
+    }
 
+    public Boolean isExpired(String token){
+        return getPayload(token).getExpiration().before(new Date());
+    }
+
+    public String createJwt(String category, String username, String role, Long expiredMs){
         return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiredMs))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .claim("category", category)
+                .claim("username", username)
+                .claim("role", role)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + expiredMs))
+                .signWith(secretKey)
                 .compact();
     }
 }
