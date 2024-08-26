@@ -27,6 +27,9 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        
+        System.out.println("onAuthenticationSuccess 도달");
+        
         // create JWT
         CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 

@@ -27,7 +27,7 @@ public class JoinService {
                 .builder()
                 .username(joinDto.getUsername())
                 .password(bCryptPasswordEncoder.encode(joinDto.getPassword()))
-                .role("ROLE_ADMIN")
+                .role("ROLE_USER")
                 .build();
 
         formUserRepository.save(formUserEntity);

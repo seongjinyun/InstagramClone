@@ -22,7 +22,7 @@ spring:
           google:
             #github push 불가능, id, secret key 제거 후 커밋
             #추후에 github에서 따로 설정 필요
-            client-name: ${google}
+            client-name: google
             client-id: 512715815216-f6adgjebvgdh15vjsmth5o1ub1jnfi5t.apps.googleusercontent.com
             client-secret: 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
             redirect-uri: http://localhost:8080/login/oauth2/code/google

@@ -43,7 +43,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         // provider name + provider Id 로 username(식별자) 생성
         String username = response.getProvider() + " " + response.getProviderId();
         CustomOAuth2User customOAuth2User = null;
-        String role = "ROLE_ADMIN";
+        String role = "ROLE_USER";
 
         // DB save
         saveUser(response, username, role);
