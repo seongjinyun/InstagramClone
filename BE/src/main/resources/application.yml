@@ -22,11 +22,7 @@ spring:
           google:
             #github push 불가능, id, secret key 제거 후 커밋
             #추후에 github에서 따로 설정 필요
-<<<<<<< HEAD:src/main/resources/application.yml
-            client-name: ${google}
-=======
             client-name: google
->>>>>>> 0b64cddf580cc359df5b09cf9f5368514041e843:BE/src/main/resources/application.yml
             client-id: 512715815216-f6adgjebvgdh15vjsmth5o1ub1jnfi5t.apps.googleusercontent.com
             client-secret: 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
             redirect-uri: http://localhost:8080/login/oauth2/code/google
@@ -69,13 +65,10 @@ logging:
     org.hibernate.type: trace
     org.springframework.security: DEBUG
 
-<<<<<<< HEAD:src/main/resources/application.yml
 jwt:
   secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
-=======
 # mustache 한글 깨짐
 server:
   servlet:
     encoding:
       force-response: true
->>>>>>> 0b64cddf580cc359df5b09cf9f5368514041e843:BE/src/main/resources/application.yml

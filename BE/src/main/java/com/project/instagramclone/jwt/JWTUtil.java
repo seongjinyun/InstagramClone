@@ -20,7 +20,7 @@ public class JWTUtil {
     // application.yml에서 key 주입
     private Key key;
 
-    public JWTUtil(@Value("${spring.jwt.secret}") String secret) {
+    public JWTUtil(@Value("${jwt.secret}") String secret) {
         byte[] byteSecretKey = Decoders.BASE64.decode(secret);
         key = Keys.hmacShaKeyFor(byteSecretKey);
     }

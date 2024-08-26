@@ -1,5 +1,6 @@
-package com.project.instagramclone.oauth2;
+package com.project.instagramclone.dto.oauth2;
 
+import com.project.instagramclone.dto.oauth2.CustomOAuth2User;
 import com.project.instagramclone.jwt.JWTUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
