@@ -1,5 +1,6 @@
 package com.project.instagramclone.entity.oauth2;
 
+import com.project.instagramclone.entity.member.MemberEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -42,14 +43,19 @@ public class OAuth2UserEntity {
     @JoinColumn(name = "idpId")
     private IdpEntity idpEntity;
 
+    @OneToOne
+    @JoinColumn(name = "member_id")
+    private MemberEntity memberEntity;
+
     @Builder
-    public OAuth2UserEntity(String username, String nickname, String email, boolean activated, String role, IdpEntity idpEntity) {
+    public OAuth2UserEntity(String username, String nickname, String email, boolean activated, String role, IdpEntity idpEntity, MemberEntity memberEntity) {
         this.username = username;
         this.nickname = nickname;
         this.email = email;
         this.activated = activated;
         this.role = role;
         this.idpEntity = idpEntity;
+        this.memberEntity = memberEntity;
     }
 
 }
