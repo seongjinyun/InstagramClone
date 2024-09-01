@@ -46,6 +46,16 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final RefreshTokenService refreshTokenService;
     private final RefreshRepository refreshRepository;
+    public static final String[] swaggerArray = {
+            "/api-docs",
+            "/swagger-ui-custom.html",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/api-docs/**",
+            "/swagger-ui.html",
+            "/swagger-custom-ui.html",
+            "/swagger-ui/**"
+    };
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -75,15 +85,15 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
 
                 // formLogin 커스터마이즈
-                .formLogin((form) -> form.loginPage("/login")
-                        .loginProcessingUrl("/login")
+                .formLogin((form) -> form.loginPage("/api/v1/login")
+                        .loginProcessingUrl("/api/v1/login")
                         .successHandler(new CustomFormSuccessHandler(jwtUtil, refreshTokenService))
                         .failureHandler(authenticationFailureHandler())
                         .permitAll())
 
                 // OAuth2
                 .oauth2Login((oauth2) -> oauth2
-                        .loginPage("/login")
+                        .loginPage("/api/v1/login")
                         .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
                                 .userService(customOAuth2UserService))
                         .successHandler(new CustomOAuth2SuccessHandler(jwtUtil, refreshTokenService))
@@ -117,9 +127,10 @@ public class SecurityConfig {
 
                 // HttpServletRequest를 사용하는 요청에 대한 접근제한 설정
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers("/", "/login", "/join", "/logout", "/oauth2-jwt-header").permitAll() // 허용
+                        .requestMatchers("/", "/api/v1/login", "/api/v1/join", "/logout", "/api/v1/oauth2-jwt-header").permitAll() // 허용
+                        .requestMatchers(swaggerArray).permitAll() // swagger 페이지 접근 허용
                         .requestMatchers(PathRequest.toH2Console()).permitAll() // H2콘솔 허용
-                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/admin").hasRole("ADMIN")
                         // .requestMatchers("/api/oauth/google/login").permitAll() // 구글 로그인
                         .anyRequest().authenticated() // 나머지 요청에 대해서 인증 필요
                 )
