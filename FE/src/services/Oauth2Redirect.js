@@ -8,7 +8,7 @@ const OAuth2Redirect = () => {
     const OAuth2JwtHeaderFetch = async () => {
         const [queryParams] = useSearchParams();
         try {
-            const response = await fetch("http://localhost:8080/oauth2-jwt-header", {
+            const response = await fetch("http://localhost:8080/api/v1/oauth2-jwt-header", {
                 method: "POST",
                 credentials: "include",
             });

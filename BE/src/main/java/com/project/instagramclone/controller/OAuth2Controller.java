@@ -1,10 +1,12 @@
 package com.project.instagramclone.controller;
 
 import com.project.instagramclone.service.oauth2.OAuth2JwtHeaderService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1")
+@Tag(name="OAuth2 service", description="OAuth2 service API")
 public class OAuth2Controller {
     private final OAuth2JwtHeaderService oAuth2JwtHeaderService;
 

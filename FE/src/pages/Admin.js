@@ -7,7 +7,7 @@ const Admin = () => {
     const location = useLocation();
     const [data, setData] = useState("");
 
-    fetchAuthorizedPage("http://localhost:8080/admin", navigate, location)
+    fetchAuthorizedPage("http://localhost:8080/api/v1/admin", navigate, location)
         .then(result => setData(result));
 
     return data && <h2>{data}</h2>;

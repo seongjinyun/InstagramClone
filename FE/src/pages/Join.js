@@ -9,7 +9,7 @@ const JoinForm = () => {
 
     const fetchJoin = async (credentials) => {
         try {
-            const response = await fetch("http://localhost:8080/join", {
+            const response = await fetch("http://localhost:8080/api/v1/join", {
                 method: "POST",
                 credentials: 'include',
                 headers: {
