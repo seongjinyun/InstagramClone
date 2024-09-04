@@ -1,5 +1,6 @@
 package com.project.instagramclone.entity.form;
 
+import com.project.instagramclone.entity.member.MemberEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -39,14 +40,19 @@ public class FormUserEntity {
     @Column(name = "Role")
     private String role;
 
+    @OneToOne
+    @JoinColumn(name = "member_id")
+    private MemberEntity memberEntity;
+
     @Builder
-    public FormUserEntity(String username, String password, String nickname, String email, boolean activated, String role) {
+    public FormUserEntity(String username, String password, String nickname, String email, boolean activated, String role, MemberEntity memberEntity) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
         this.email = email;
         this.activated = activated;
         this.role = role;
+        this.memberEntity = memberEntity;
     }
 
 }

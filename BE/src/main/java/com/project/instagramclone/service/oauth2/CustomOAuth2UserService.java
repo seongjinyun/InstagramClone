@@ -4,7 +4,9 @@ import com.project.instagramclone.dto.oauth2.CustomOAuth2User;
 import com.project.instagramclone.dto.oauth2.GoogleResponse;
 import com.project.instagramclone.dto.oauth2.OAuth2Response;
 import com.project.instagramclone.dto.oauth2.OAuth2UserDto;
+import com.project.instagramclone.entity.member.MemberEntity;
 import com.project.instagramclone.entity.oauth2.OAuth2UserEntity;
+import com.project.instagramclone.repository.member.MemberRepository;
 import com.project.instagramclone.repository.oauth2.OAuth2UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final OAuth2UserRepository oAuth2UserRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     @Override
@@ -71,13 +74,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Optional<OAuth2UserEntity> isExist = oAuth2UserRepository.findByUsername(username);
 
         if (isExist.isPresent()) {
+            // 사용자 업데이트 로직
             isExist.stream();
         } else {
+            MemberEntity memberEntity = new MemberEntity();
+            memberEntity = memberRepository.save(memberEntity);
+
             OAuth2UserEntity oAuth2UserEntity = OAuth2UserEntity.builder()
                     .username(username)
                     .nickname(response.getName())
                     .email(response.getEmail())
                     .role(role)
+                    .memberEntity(memberEntity)
                     .build();
             oAuth2UserRepository.save(oAuth2UserEntity);
         }
