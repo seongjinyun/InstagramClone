@@ -5,6 +5,7 @@ import Home from '../pages/Home';
 import OAuth2Redirect from '../services/Oauth2Redirect';
 import Admin from '../pages/Admin';
 import Logout from '../pages/Logout';
+import Follow from '../pages/Follow';
 import { useLogin } from '../contexts/AuthContext';
 
 const MyRoutes = () => {
@@ -16,6 +17,7 @@ const MyRoutes = () => {
       {!isLoggedIn && <Route path="/login" element={<LoginForm />} />}
       {!isLoggedIn && <Route path="/join" element={<JoinForm />} />}
       {isLoggedIn && <Route path="/logout" element={<Logout />} />}
+      {isLoggedIn && <Route path="/follow" element={<Follow />} />}
       <Route path="/admin" element={<Admin />} />
       <Route path="/oauth2-jwt-header" element={<OAuth2Redirect />} />
     </Routes>
