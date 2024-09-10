@@ -67,17 +67,22 @@ const Follow = () => {
     };
 
     // 팔로우 기능
-    const handleFollow = async (memberId) => {
+    const handleFollow = async (memberUsername) => {
         try {
+            // 자신을 팔로우하는 것을 막기 위한 조건
+            if (memberUsername === loginUser) {
+                alert("자기 자신을 팔로우할 수 없습니다.");
+                return;
+            }
+
             const token = localStorage.getItem('access');
             if (!token) {
-                console.log("Access Token이 없습니다.");
                 alert("로그인이 필요합니다.");
                 navigate("/login");
                 return;
             }
 
-            const response = await fetch(`http://localhost:8080/api/v1/${loginUser}/follow/${memberId}`, {
+            const response = await fetch(`http://localhost:8080/api/v1/${loginUser}/follow/${memberUsername}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -87,7 +92,7 @@ const Follow = () => {
 
             if (response.ok) {
                 alert('팔로우 성공');
-                fetchFollowing(); // 팔로우 목록 업데이트
+                fetchFollowing();
             } else {
                 alert('팔로우 실패');
             }
@@ -97,7 +102,7 @@ const Follow = () => {
     };
 
     // 언팔로우 기능
-    const handleUnfollow = async (memberId) => {
+    const handleUnfollow = async (memberUsername) => {
         try {
             const token = localStorage.getItem('access');
             if (!token) {
@@ -107,7 +112,7 @@ const Follow = () => {
                 return;
             }
 
-            const response = await fetch(`http://localhost:8080/api/v1/${loginUser}/unfollow/${memberId}`, {
+            const response = await fetch(`http://localhost:8080/api/v1/${loginUser}/unfollow/${memberUsername}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -117,7 +122,7 @@ const Follow = () => {
 
             if (response.ok) {
                 alert('언팔로우 성공');
-                fetchFollowing(); // 팔로잉 목록 업데이트
+                fetchFollowing();
             } else {
                 alert('언팔로우 실패');
             }
@@ -141,7 +146,7 @@ const Follow = () => {
                 <h2>팔로워 목록</h2>
                 <ul>
                     {followers.map((follower, index) => (
-                        <li key={index}>{follower.follower.name}</li>
+                        <li key={index}>{follower.followerUsername}</li>
                     ))}
                 </ul>
             </div>
@@ -151,8 +156,8 @@ const Follow = () => {
                 <ul>
                     {following.map((followed, index) => (
                         <li key={index}>
-                            {followed.member.name}
-                            <button onClick={() => handleUnfollow(followed.member.id)}>언팔로우</button>
+                            {followed.memberUsername}
+                            <button onClick={() => handleUnfollow(followed.memberUsername)}>언팔로우</button>
                         </li>
                     ))}
                 </ul>
@@ -160,11 +165,12 @@ const Follow = () => {
 
             <div>
                 <h2>사용자 팔로우</h2>
-                <input type="text" placeholder="팔로우할 사용자 ID" id="followUserId"/>
-                <button onClick={() => handleFollow(document.getElementById('followUserId').value)}>팔로우</button>
+                <input type="text" placeholder="팔로우할 사용자 Username" id="followUserUsername"/>
+                <button onClick={() => handleFollow(document.getElementById('followUserUsername').value)}>팔로우</button>
             </div>
         </div>
-    );
+)
+    ;
 };
 
 export default Follow;

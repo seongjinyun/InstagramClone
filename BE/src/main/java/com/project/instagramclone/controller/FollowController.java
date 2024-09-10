@@ -27,25 +27,23 @@ public class FollowController {
     private final CustomUserDetailsService customUserDetailsService;
 
     @Operation(summary = "팔로우 요청", description = "특정 사용자를 팔로우합니다.")
-    @PostMapping("/{username}/follow/{memberId}")
-    public ResponseEntity<String> follow(@PathVariable String username, @PathVariable Long memberId, Authentication authentication) {
+    @PostMapping("/{username}/follow/{memberUsername}")
+    public ResponseEntity<String> follow(@PathVariable String username, @PathVariable String memberUsername, Authentication authentication) {
         // username을 기반으로 현재 사용자와 일치하는지 확인할 수 있습니다.
         if (!username.equals(authentication.getName())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("권한이 없습니다.");
         }
-        Long followerId = customUserDetailsService.getMemberIdByUsername(username); // username으로 followerId 조회
-        followService.follow(followerId, memberId);
+        followService.follow(username, memberUsername);
         return ResponseEntity.ok("팔로우 성공");
     }
 
     @Operation(summary = "언팔로우 요청", description = "특정 사용자를 언팔로우합니다.")
-    @PostMapping("/{username}/unfollow/{memberId}")
-    public ResponseEntity<String> unfollow(@PathVariable String username, @PathVariable Long memberId, Authentication authentication) {
+    @DeleteMapping("/{username}/unfollow/{memberUsername}")
+    public ResponseEntity<String> unfollow(@PathVariable String username, @PathVariable String memberUsername, Authentication authentication) {
         if (!username.equals(authentication.getName())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("권한이 없습니다.");
         }
-        Long followerId = customUserDetailsService.getMemberIdByUsername(username);
-        followService.unfollow(followerId, memberId);
+        followService.unfollow(username, memberUsername);
         return ResponseEntity.ok("언팔로우 성공");
     }
 
@@ -56,8 +54,7 @@ public class FollowController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        Long memberId = customUserDetailsService.getMemberIdByUsername(username);
-        List<FollowDto> followers = followService.getFollowers(memberId);
+        List<FollowDto> followers = followService.getFollowers(username);
         return ResponseEntity.ok(followers);
     }
 
@@ -68,8 +65,7 @@ public class FollowController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        Long memberId = customUserDetailsService.getMemberIdByUsername(username);
-        List<FollowDto> following = followService.getFollowing(memberId);
+        List<FollowDto> following = followService.getFollowing(username);
         return ResponseEntity.ok(following);
     }
 }

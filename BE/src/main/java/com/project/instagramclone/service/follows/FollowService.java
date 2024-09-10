@@ -28,12 +28,16 @@ public class FollowService {
 
     // 팔로우 기능
     @Transactional
-    public void follow(long followerId, long memberId) {
+    public void follow(String followerUsername, String memberUsername) {
         // 팔로우 대상과 팔로워가 존재하는지 확인
-        MemberEntity follower = memberRepository.findById(followerId)
-                .orElseThrow(() -> new IllegalArgumentException("팔로워가 존재하지 않습니다."));
-        MemberEntity member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("팔로우 대상이 존재하지 않습니다."));
+        FormUserEntity followerUser = formUserRepository.findByUsername(followerUsername)
+                .orElseThrow(() -> new IllegalArgumentException("팔로워를 찾을 수 없습니다."));
+        FormUserEntity memberUser = formUserRepository.findByUsername(memberUsername)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        MemberEntity follower = memberRepository.findById(followerUser.getMemberEntity().getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("팔로워를 찾을 수 없습니다."));
+        MemberEntity member = memberRepository.findById(memberUser.getMemberEntity().getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
         // 이미 팔로우된 상태인지 확인
         if (followsRepository.existsByFollowerAndMember(follower, member)) {
@@ -49,12 +53,16 @@ public class FollowService {
 
     // 언팔로우 기능
     @Transactional
-    public void unfollow(long followerId, long memberId) {
+    public void unfollow(String followerUsername, String memberUsername) {
         // 팔로우 대상과 팔로워가 존재하는지 확인
-        MemberEntity follower = memberRepository.findById(followerId)
-                .orElseThrow(() -> new IllegalArgumentException("팔로워가 존재하지 않습니다."));
-        MemberEntity member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("팔로우 대상이 존재하지 않습니다."));
+        FormUserEntity followerUser = formUserRepository.findByUsername(followerUsername)
+                .orElseThrow(() -> new IllegalArgumentException("팔로워를 찾을 수 없습니다."));
+        FormUserEntity memberUser = formUserRepository.findByUsername(memberUsername)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        MemberEntity follower = memberRepository.findById(followerUser.getMemberEntity().getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("팔로워를 찾을 수 없습니다."));
+        MemberEntity member = memberRepository.findById(memberUser.getMemberEntity().getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
         // 팔로우 상태가 아닌지 확인
         if (!followsRepository.existsByFollowerAndMember(follower, member)) {
@@ -66,33 +74,39 @@ public class FollowService {
     }
 
     // {memberId}를 팔로우하는 팔로워 계정 목록 조회
-    public List<FollowDto> getFollowers(long memberId) {
-        MemberEntity member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+    public List<FollowDto> getFollowers(String memberUsername) {
+        FormUserEntity memberUser = formUserRepository.findByUsername(memberUsername)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        MemberEntity member = memberUser.getMemberEntity();
+
         List<FollowsEntity> followsEntities = followsRepository.findAllByMember(member);
 
         return followsEntities.stream()
-                .map(follow -> createFollowDTO(follow))
+                .map(this::createFollowDTO)
                 .collect(Collectors.toList());
     }
 
     // {followerId}가 팔로우하는 계정 목록 조회
-    public List<FollowDto> getFollowing(Long memberId) {
-        MemberEntity member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+    public List<FollowDto> getFollowing(String memberUsername) {
+        FormUserEntity memberUser = formUserRepository.findByUsername(memberUsername)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        MemberEntity member = memberUser.getMemberEntity();
+
         List<FollowsEntity> followsEntities = followsRepository.findAllByFollower(member);
 
         return followsEntities.stream()
-                .map(follow -> createFollowDTO(follow))
+                .map(this::createFollowDTO)
                 .collect(Collectors.toList());
     }
 
     private FollowDto createFollowDTO(FollowsEntity follows) {
-        Long followerId = follows.getFollower().getMemberId();
-        Long memberId = follows.getMember().getMemberId();
+        String followerUsername = formUserRepository.findByMemberEntity(follows.getFollower())
+                .map(FormUserEntity::getUsername)
+                .orElseThrow(() -> new IllegalArgumentException("팔로워 정보를 찾을 수 없습니다."));
 
-        String followerUsername = getUsernameByMemberId(followerId);
-        String memberUsername = getUsernameByMemberId(memberId);
+        String memberUsername = formUserRepository.findByMemberEntity(follows.getMember())
+                .map(FormUserEntity::getUsername)
+                .orElseThrow(() -> new IllegalArgumentException("팔로우 대상 정보를 찾을 수 없습니다."));
 
         return new FollowDto(follows.getFollowsId(), followerUsername, memberUsername);
     }
