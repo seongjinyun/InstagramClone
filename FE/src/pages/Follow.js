@@ -141,7 +141,7 @@ const Follow = () => {
                 <h2>팔로워 목록</h2>
                 <ul>
                     {followers.map((follower, index) => (
-                        <li key={index}>{follower.follower.name}</li>
+                        <li key={index}>{follower.followerUsername}</li>
                     ))}
                 </ul>
             </div>
@@ -151,8 +151,8 @@ const Follow = () => {
                 <ul>
                     {following.map((followed, index) => (
                         <li key={index}>
-                            {followed.member.name}
-                            <button onClick={() => handleUnfollow(followed.member.id)}>언팔로우</button>
+                            {followed.memberUsername}
+                            <button onClick={() => handleUnfollow(followed.followsId)}>언팔로우</button>
                         </li>
                     ))}
                 </ul>

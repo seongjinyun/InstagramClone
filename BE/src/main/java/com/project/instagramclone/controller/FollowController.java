@@ -39,7 +39,7 @@ public class FollowController {
     }
 
     @Operation(summary = "언팔로우 요청", description = "특정 사용자를 언팔로우합니다.")
-    @PostMapping("/{username}/unfollow/{memberId}")
+    @DeleteMapping("/{username}/unfollow/{memberId}")
     public ResponseEntity<String> unfollow(@PathVariable String username, @PathVariable Long memberId, Authentication authentication) {
         if (!username.equals(authentication.getName())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("권한이 없습니다.");
