@@ -147,6 +147,7 @@ const Follow = () => {
                 <ul>
                     {followers.map((follower, index) => (
                         <li key={index}>{follower.followerUsername}</li>
+                        <li key={index}>{follower.followerUsername}</li>
                     ))}
                 </ul>
             </div>
