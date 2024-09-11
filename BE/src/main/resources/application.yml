@@ -90,3 +90,7 @@ springdoc:
   model-and-view-allowed: true
   paths-to-match:
     - /api/v1/**
+
+data:
+  mongodb:
+    uri: mongodb://mongo:1234@localhost:27017/post?authSource=post
