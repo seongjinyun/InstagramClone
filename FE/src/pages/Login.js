@@ -24,24 +24,31 @@ const LoginForm = () => {
             });
 
             if (response.ok) {
-                alert('Login successful');
+                // 응답에서 'accesss' 헤더에서 Access Token을 추출하여 저장
+                const accessToken = response.headers.get("access");
+
+                if (accessToken) {
+                    window.localStorage.setItem("access", accessToken);  // Access Token을 저장
+                    alert('로그인 성공');
+                } else {
+                    alert('Access Token을 찾을 수 없습니다.');
+                }
 
                 const data = await response.json();
                 const { name } = data;
 
-                window.localStorage.setItem("access", response.headers.get("access"));
                 window.localStorage.setItem("name", name);
-                
+
                 setIsLoggedIn(true);
                 setLoginUser(name);
-                
+
                 // 로그인 완료 후, 이전 요청이 존재하면 이전 요청으로 이동
                 navigate(prevUrl, { replace: true });
             } else {
-                alert('Login failed');
+                alert('로그인 실패');
             }
         } catch (error) {
-            console.log('error: ', error)
+            console.log('로그인 중 오류 발생: ', error);
         }
     };
 

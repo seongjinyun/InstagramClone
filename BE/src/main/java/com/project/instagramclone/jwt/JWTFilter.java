@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -27,35 +28,53 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        // access token 조회
-        String access = null;
-        access = request.getHeader("access");
+        String uri = request.getRequestURI();
 
-        // access token이 null일 경우
-        if(access == null) {
+        // 회원가입이나 로그인 등 인증이 필요 없는 엔드포인트는 필터를 거치지 않음
+        if (uri.equals("/api/v1/join") || uri.equals("/api/v1/login")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // access token이 만료되었을(expired) 경우
-        try{
-            jwtUtil.isExpired(access);
+        // Authorization 또는 access 헤더에서 토큰 추출
+        String header = request.getHeader("Authorization");
+        String accessHeader = request.getHeader("access");
+
+        String token = null;
+
+        if (header != null && header.startsWith("Bearer ")) {
+            token = header.substring(7); // Bearer {token} 형식에서 토큰 추출
+        } else if (accessHeader != null) {
+            token = accessHeader; // access 헤더에서 토큰 가져오기
+        }
+
+        if (token == null) {
+            logger.debug("request에서 access token 찾을 수 없음.");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        try {
+            // 토큰이 만료되었는지 확인
+            jwtUtil.isExpired(token);
         } catch (ExpiredJwtException e) {
+            logger.debug("access token 만료.");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        String category = jwtUtil.getCategory(access);
+        String category = jwtUtil.getCategory(token);
 
-        // access token이 아닐 경우
-        if(!category.equals("access")) {
+        if (!category.equals("access")) {
+            logger.debug("access token이 아님.");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        // 정상적인 access token일 경우, 정보를 가져온다
-        String username = jwtUtil.getUsername(access);
-        String role = jwtUtil.getRole(access);
+        // 정상적인 토큰인 경우 사용자 정보 추출
+        logger.debug("정상적인 access token 조회.");
+        String username = jwtUtil.getUsername(token);
+        String role = jwtUtil.getRole(token);
 
         FormUserEntity formUserEntity = FormUserEntity.builder()
                 .username(username)
@@ -64,8 +83,16 @@ public class JWTFilter extends OncePerRequestFilter {
                 .build();
 
         CustomUserDetails customUserDetails = new CustomUserDetails(formUserEntity);
-        UsernamePasswordAuthenticationToken authtoken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authtoken);;
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+
+        // authToken의 정상적인 생성이 진행되는지 확인을 위한 로그
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            logger.debug("SecurityContext에 인증 정보가 없음.");
+        } else {
+            logger.debug("인증된 사용자: " + authentication.getName());
+        }
 
         filterChain.doFilter(request, response);
     }

@@ -25,4 +25,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
         throw new UsernameNotFoundException("회원 정보가 존재하지 않습니다.");
     }
+
+    public Long getMemberIdByUsername(String username) {
+        // username으로 FormUserEntity 조회
+        FormUserEntity formUser = formUserRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+        // FormUserEntity에서 memberEntity의 memberId 반환
+        return formUser.getMemberEntity().getMemberId();
+    }
 }

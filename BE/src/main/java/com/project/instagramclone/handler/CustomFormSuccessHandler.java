@@ -36,7 +36,7 @@ public class CustomFormSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
         // access token 생성
         String access = jwtUtil.createJwt("access", username, role, 60*10*1000L);
-        response.setHeader("accesss", access);
+        response.setHeader("access", access);
 
         // refresh token 생성
         Integer expireS = 24 * 60 * 60;
