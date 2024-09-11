@@ -25,10 +25,12 @@ public class JoinController {
     @PostMapping("/join")
     @Operation(summary = "회원가입", description = "회원가입에 사용되는 API ") // 각 API에 대한 설명
     @ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json")) //응답 코드에 대한 정보
-    @Parameter(name="username", description="유저 ID") //파라미터에 대한 정보
-    @Parameter(name="password", description="비밀번호") //파라미터에 대한 정보
-    @Parameter(name="nickname", description="닉네임" ) //파라미터에 대한 정보
-    @Parameter(name="email", description="이메일") //파라미터에 대한 정보
+    @Parameters({
+        @Parameter(name="username", description="유저 ID"), //파라미터에 대한 정보
+        @Parameter(name="password", description="비밀번호"), //파라미터에 대한 정보
+        @Parameter(name="nickname", description="닉네임" ), //파라미터에 대한 정보
+        @Parameter(name="email", description="이메일") //파라미터에 대한 정보
+    })
     public String joinProc(@ModelAttribute JoinDto joinDto) {
         joinService.join(joinDto);
         return "ok";

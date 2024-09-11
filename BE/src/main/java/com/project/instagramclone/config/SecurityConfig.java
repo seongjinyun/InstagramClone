@@ -127,7 +127,15 @@ public class SecurityConfig {
 
                 // HttpServletRequest를 사용하는 요청에 대한 접근제한 설정
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers("/", "/api/v1/login", "/api/v1/join", "/logout", "/api/v1/oauth2-jwt-header").permitAll() // 허용
+                        .requestMatchers(
+                                // 회원가입 및 로그인/로그아웃 관련 로직
+                                "/",
+                                "/api/v1/login",
+                                "/api/v1/join",
+                                "/logout",
+                                "/api/v1/oauth2-jwt-header",
+                                "/error"
+                        ).permitAll() // 허용
                         .requestMatchers(swaggerArray).permitAll() // swagger 페이지 접근 허용
                         .requestMatchers(PathRequest.toH2Console()).permitAll() // H2콘솔 허용
                         .requestMatchers("/api/v1/admin").hasRole("ADMIN")
@@ -143,7 +151,7 @@ public class SecurityConfig {
                 )
 
                 // JwtFilter 등록
-                .addFilterAfter(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
 
                 // custom logout filter 등록
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class)

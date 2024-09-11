@@ -43,9 +43,9 @@ public class OAuth2UserEntity {
     @JoinColumn(name = "idpId")
     private IdpEntity idpEntity;
 
-    @OneToOne
-    @JoinColumn(name = "member_id")
-    private MemberEntity memberEntity;
+    @ManyToOne
+    @JoinColumn(name = "memberId", referencedColumnName = "memberId", nullable = false)
+    private MemberEntity memberEntity;  // MemberEntity와의 관계 설정
 
     @Builder
     public OAuth2UserEntity(String username, String nickname, String email, boolean activated, String role, IdpEntity idpEntity, MemberEntity memberEntity) {

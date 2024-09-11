@@ -40,9 +40,9 @@ public class FormUserEntity {
     @Column(name = "Role")
     private String role;
 
-    @OneToOne
-    @JoinColumn(name = "member_id")
-    private MemberEntity memberEntity;
+    @ManyToOne
+    @JoinColumn(name = "memberId", referencedColumnName = "memberId", nullable = false)
+    private MemberEntity memberEntity;  // MemberEntity와의 관계 설정
 
     @Builder
     public FormUserEntity(String username, String password, String nickname, String email, boolean activated, String role, MemberEntity memberEntity) {
