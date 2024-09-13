@@ -62,6 +62,7 @@ logging:
   level:
     com.project: DEBUG
     # 파라미터 확인
+    org.springframework: DEBUG
     org.hibernate.type: trace
     org.springframework.security: DEBUG
 
