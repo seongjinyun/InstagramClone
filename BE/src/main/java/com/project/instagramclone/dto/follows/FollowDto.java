@@ -11,7 +11,8 @@ import java.util.Optional;
 @NoArgsConstructor
 public class FollowDto {
     // 팔로우 / 팔로잉하는 회원의 정보를 담을 때 사용
-    private Long followsId;
-    private String followerUsername;
-    private String memberUsername;
+    private Long followerId;
+    private Long memberId;
+    private String followerNickname;  // 추가
+    private String followingNickname; // 추가
 }

@@ -54,7 +54,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         // Entity 목적 순수하게 유지하기 위해서 dto 로 전달..
         OAuth2UserDto oAuth2UserDto = OAuth2UserDto.builder()
                 .username(username)
-                .name(response.getName())
+                .nickname(response.getName())
                 .email(response.getEmail())
                 .role(role)
                 .build();

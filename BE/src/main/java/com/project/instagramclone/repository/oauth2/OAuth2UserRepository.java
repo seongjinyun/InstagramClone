@@ -11,8 +11,6 @@ import java.util.Optional;
 public interface OAuth2UserRepository extends JpaRepository<OAuth2UserEntity, Long> {
 
     Optional<OAuth2UserEntity> findByUsername(String username);
+    Optional<OAuth2UserEntity> findByMemberEntity(MemberEntity memberEntity);
     Optional<OAuth2UserEntity> findByNickname(String nickname);
-
-    Optional<OAuth2UserEntity> findByMemberEntity(MemberEntity memberEntity); // memberId로 OAuth2User 조회
-
 }

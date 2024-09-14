@@ -16,6 +16,8 @@ const Follow = () => {
         }
     }, [isLoggedIn, navigate]);
 
+    const nickname = window.localStorage.getItem("nickname");  // nickname을 가져옴
+
     // 팔로워 목록 가져오기
     const fetchFollowers = async () => {
         try {
@@ -24,7 +26,7 @@ const Follow = () => {
                 alert("로그인이 필요합니다.");
                 return;
             }
-            const response = await fetch(`http://localhost:8080/api/v1/${loginUser}/followers`, {
+            const response = await fetch(`http://localhost:8080/api/v1/${nickname}/followers`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -49,7 +51,7 @@ const Follow = () => {
                 alert("로그인이 필요합니다.");
                 return;
             }
-            const response = await fetch(`http://localhost:8080/api/v1/${loginUser}/following`, {
+            const response = await fetch(`http://localhost:8080/api/v1/${nickname}/following`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -67,10 +69,10 @@ const Follow = () => {
     };
 
     // 팔로우 기능
-    const handleFollow = async (memberUsername) => {
+    const handleFollow = async (memberNickname) => {
         try {
             // 자신을 팔로우하는 것을 막기 위한 조건
-            if (memberUsername === loginUser) {
+            if (memberNickname === loginUser) {
                 alert("자기 자신을 팔로우할 수 없습니다.");
                 return;
             }
@@ -82,7 +84,7 @@ const Follow = () => {
                 return;
             }
 
-            const response = await fetch(`http://localhost:8080/api/v1/${loginUser}/follow/${memberUsername}`, {
+            const response = await fetch(`http://localhost:8080/api/v1/${nickname}/follow/${memberNickname}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -102,7 +104,7 @@ const Follow = () => {
     };
 
     // 언팔로우 기능
-    const handleUnfollow = async (memberUsername) => {
+    const handleUnfollow = async (memberNickname) => {
         try {
             const token = localStorage.getItem('access');
             if (!token) {
@@ -112,7 +114,7 @@ const Follow = () => {
                 return;
             }
 
-            const response = await fetch(`http://localhost:8080/api/v1/${loginUser}/unfollow/${memberUsername}`, {
+            const response = await fetch(`http://localhost:8080/api/v1/${nickname}/unfollow/${memberNickname}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -146,7 +148,10 @@ const Follow = () => {
                 <h2>팔로워 목록</h2>
                 <ul>
                     {followers.map((follower, index) => (
-                        <li key={index}>{follower.followerUsername}</li>
+                        <li key={index}>
+                            {follower.followerNickname}
+                            <button onClick={() => handleFollow(follower.followerNickname)}>맞팔로우</button>
+                        </li>
                     ))}
                 </ul>
             </div>
@@ -156,8 +161,8 @@ const Follow = () => {
                 <ul>
                     {following.map((followed, index) => (
                         <li key={index}>
-                            {followed.memberUsername}
-                            <button onClick={() => handleUnfollow(followed.memberUsername)}>언팔로우</button>
+                            {followed.followingNickname}
+                            <button onClick={() => handleUnfollow(followed.followingNickname)}>언팔로우</button>
                         </li>
                     ))}
                 </ul>
@@ -165,8 +170,8 @@ const Follow = () => {
 
             <div>
                 <h2>사용자 팔로우</h2>
-                <input type="text" placeholder="팔로우할 사용자 Username" id="followUserUsername"/>
-                <button onClick={() => handleFollow(document.getElementById('followUserUsername').value)}>팔로우</button>
+                <input type="text" placeholder="팔로우할 사용자 Nickname" id="followUserNickname"/>
+                <button onClick={() => handleFollow(document.getElementById('followUserNickname').value)}>팔로우</button>
             </div>
         </div>
 )

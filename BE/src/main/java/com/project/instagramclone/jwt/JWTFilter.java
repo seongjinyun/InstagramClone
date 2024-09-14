@@ -2,6 +2,7 @@ package com.project.instagramclone.jwt;
 
 import com.project.instagramclone.dto.form.CustomUserDetails;
 import com.project.instagramclone.entity.form.FormUserEntity;
+import com.project.instagramclone.service.form.CustomUserDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -24,6 +26,7 @@ import java.io.IOException;
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -76,15 +79,15 @@ public class JWTFilter extends OncePerRequestFilter {
         String username = jwtUtil.getUsername(token);
         String role = jwtUtil.getRole(token);
 
-        FormUserEntity formUserEntity = FormUserEntity.builder()
-                .username(username)
-                .role(role)
-                .password("temp_password")
-                .build();
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            // DB에서 사용자 정보 조회
+            UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);  // DB 조회
 
-        CustomUserDetails customUserDetails = new CustomUserDetails(formUserEntity);
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authToken);
+            if (jwtUtil.validateToken(token, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        }
 
         // authToken의 정상적인 생성이 진행되는지 확인을 위한 로그
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

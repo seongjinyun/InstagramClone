@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -37,6 +38,10 @@ public class JWTUtil {
         return getPayload(token).get("username", String.class);
     }
 
+    public String getNickname(String token){
+        return getPayload(token).get("nickname", String.class);
+    }
+
     public String getRole(String token){
         return getPayload(token).get("role", String.class);
     }
@@ -45,27 +50,20 @@ public class JWTUtil {
         return getPayload(token).get("category", String.class);
     }
 
-    public Boolean isExpired(String token){
-        return getPayload(token).getExpiration().before(new Date());
-
-//        Date now = new Date(System.currentTimeMillis());
-//        Date expiration = Jwts.parserBuilder()
-//                .setSigningKey(key)
-//                .build()
-//                .parseClaimsJws(token)
-//                .getBody()
-//                .getExpiration();
-//
-//        System.out.println("현재 시간: " + now);
-//        System.out.println("JWT 만료 시간: " + expiration);
-//
-//        return expiration.before(now);
+    public boolean validateToken(String token, UserDetails userDetails) {
+        final String username = getUsername(token);  // 토큰에서 username 추출
+        return (username.equals(userDetails.getUsername()) && !isExpired(token));  // username 일치 여부 및 만료 여부 확인
     }
 
-    public String createJwt(String category, String username, String role, Long expiredMs) {
+    public Boolean isExpired(String token){
+        return getPayload(token).getExpiration().before(new Date());
+    }
+
+    public String createJwt(String category, String username, String nickname, String role, Long expiredMs) {
         Claims claims = Jwts.claims();
         claims.put("category", category);
         claims.put("username", username);
+        claims.put("nickname", nickname);
         claims.put("role", role);
 
         return Jwts.builder()

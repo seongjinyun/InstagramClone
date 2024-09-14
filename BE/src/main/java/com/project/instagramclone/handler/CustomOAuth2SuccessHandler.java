@@ -35,11 +35,12 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
         String name = customOAuth2User.getName(); // 실제 이름
         String username = customOAuth2User.getUsername(); // DB 저장용 식별자
+        String nickname = customOAuth2User.getName();
         String role = authentication.getAuthorities().iterator().next().getAuthority();
 
         Integer expireS = 24 * 60 * 60;
-        String access = jwtUtil.createJwt("access", username, role, 60 * 10 * 1000L);
-        String refresh = jwtUtil.createJwt("refresh", username, role, expireS * 1000L);
+        String access = jwtUtil.createJwt("access", username, nickname, role, 60 * 10 * 1000L);
+        String refresh = jwtUtil.createJwt("refresh", username, nickname, role, expireS * 1000L);
 
         // refresh 토큰 DB 저장
         refreshTokenService.saveRefreshToken(username, expireS, refresh);
