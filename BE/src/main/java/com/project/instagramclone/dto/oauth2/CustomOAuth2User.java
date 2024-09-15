@@ -1,7 +1,9 @@
 package com.project.instagramclone.dto.oauth2;
 
+import com.project.instagramclone.entity.oauth2.OAuth2UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
@@ -9,7 +11,8 @@ import java.util.Collection;
 import java.util.Map;
 
 @RequiredArgsConstructor
-public class CustomOAuth2User implements OAuth2User {
+public class CustomOAuth2User implements OAuth2User, UserDetails {
+
     private final OAuth2UserDto oAuth2UserDto;
 
     // 통일 x -> return null
@@ -28,6 +31,11 @@ public class CustomOAuth2User implements OAuth2User {
             }
         });
         return collection;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
     }
 
     @Override

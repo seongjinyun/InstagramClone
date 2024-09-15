@@ -25,4 +25,8 @@ public class RefreshTokenService {
         refreshRepository.save(refreshTokenEntity);
     }
 
+    public boolean existsByUsername(String username) {
+        return refreshRepository.existsAllByUsername(username);
+    }
+
 }

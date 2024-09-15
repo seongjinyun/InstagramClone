@@ -13,6 +13,6 @@ public interface FormUserRepository extends JpaRepository<FormUserEntity, Long> 
     Boolean existsByUsername(String username);
     Optional<FormUserEntity> findByUsername(String username);
     Optional<FormUserEntity> findByNickname(String nickname);
-    Optional<FormUserEntity> findByMemberEntity(MemberEntity memberEntity); // memberId로 FormUser 조회
+    Optional<FormUserEntity> findByMemberEntity_MemberId(long memberId); // memberId로 FormUser 조회
 
 }

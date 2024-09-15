@@ -12,7 +12,7 @@ import java.util.Optional;
 public class FollowDto {
     // 팔로우 / 팔로잉하는 회원의 정보를 담을 때 사용
     private Long followerId;
-    private Long memberId;
+    private Long followingId;
     private String followerNickname;  // 추가
     private String followingNickname; // 추가
 }

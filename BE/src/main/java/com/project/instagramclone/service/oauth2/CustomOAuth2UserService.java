@@ -1,15 +1,19 @@
 package com.project.instagramclone.service.oauth2;
 
+import com.project.instagramclone.dto.form.CustomUserDetails;
 import com.project.instagramclone.dto.oauth2.CustomOAuth2User;
 import com.project.instagramclone.dto.oauth2.GoogleResponse;
 import com.project.instagramclone.dto.oauth2.OAuth2Response;
 import com.project.instagramclone.dto.oauth2.OAuth2UserDto;
+import com.project.instagramclone.entity.form.FormUserEntity;
 import com.project.instagramclone.entity.member.MemberEntity;
 import com.project.instagramclone.entity.oauth2.OAuth2UserEntity;
 import com.project.instagramclone.repository.member.MemberRepository;
 import com.project.instagramclone.repository.oauth2.OAuth2UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -75,7 +79,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         if (isExist.isPresent()) {
             // 사용자 업데이트 로직
-            isExist.stream();
+            // isExist.stream();
+
+            OAuth2UserEntity user = isExist.get();
+            user.setNickname(response.getName());
+            oAuth2UserRepository.save(user);
         } else {
             MemberEntity memberEntity = new MemberEntity();
             memberEntity = memberRepository.save(memberEntity);

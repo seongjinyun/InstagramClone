@@ -7,10 +7,12 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Map;
 
 // JWT 발급 및 검증을 위한 클래스
 // LoginFIlter에서 주입받아 로그인 성공 시 사용
@@ -50,9 +52,19 @@ public class JWTUtil {
         return getPayload(token).get("category", String.class);
     }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
+    public boolean validateToken(String token, Object user) {
         final String username = getUsername(token);  // 토큰에서 username 추출
-        return (username.equals(userDetails.getUsername()) && !isExpired(token));  // username 일치 여부 및 만료 여부 확인
+        if (user instanceof UserDetails) {
+            return (username.equals(((UserDetails) user).getUsername()) && !isExpired(token)); // username 일치 여부 및 만료 여부 확인
+        } else if (user instanceof OAuth2User) {
+            Map<String, Object> attributes = ((OAuth2User) user).getAttributes();
+            if (attributes == null || attributes.get("username") == null) {
+                // OAuth2User의 attributes가 null인 경우 예외 처리
+                return false;
+            }
+            return (username.equals(attributes.get("username")) && !isExpired(token));
+        }
+        return false;
     }
 
     public Boolean isExpired(String token){
