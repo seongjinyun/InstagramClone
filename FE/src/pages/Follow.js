@@ -4,7 +4,7 @@ import { useLogin } from '../contexts/AuthContext';
 
 const Follow = () => {
     const navigate = useNavigate();
-    const { isLoggedIn, loginUser } = useLogin();
+    const { isLoggedIn, loginUser, setLoginUser } = useLogin();
     const [followers, setFollowers] = useState([]);
     const [following, setFollowing] = useState([]);
 
@@ -13,6 +13,10 @@ const Follow = () => {
         if (!isLoggedIn) {
             alert("로그인이 필요합니다.");
             navigate("/login", { replace: true });
+        }
+        const storedNickname = window.localStorage.getItem("nickname");
+        if (storedNickname) {
+            setLoginUser(storedNickname);  // 닉네임을 loginUser로 설정
         }
     }, [isLoggedIn, navigate]);
 
