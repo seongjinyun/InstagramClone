@@ -45,6 +45,9 @@ public class CustomFormSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         String refresh = jwtUtil.createJwt("refresh", username, nickname, role, expireS * 1000L);
         response.addCookie(CookieUtil.createCookie("refresh", refresh, expireS));
 
+        // 헤더 노출 설정
+        response.setHeader("Access-Control-Expose-Headers", "access");
+
         // refresh token을 DB에 저장
         refreshTokenService.saveRefreshToken(username, expireS, refresh);
 
