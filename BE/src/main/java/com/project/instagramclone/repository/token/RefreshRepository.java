@@ -9,6 +9,7 @@ import java.util.List;
 public interface RefreshRepository extends JpaRepository<RefreshTokenEntity, Long> {
     List<RefreshTokenEntity> findByUsername(String username);
     Boolean existsByRefresh(String refresh);
+    Boolean existsAllByUsername(String username);
     @Transactional
     void deleteByRefresh(String refresh);
 }

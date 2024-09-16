@@ -6,6 +6,7 @@ const JoinForm = () => {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [nickname, setNickname] = useState('');  // 추가된 닉네임 필드
 
     const fetchJoin = async (credentials) => {
         try {
@@ -30,21 +31,21 @@ const JoinForm = () => {
 
     const joinHandler = async (e) => {
         e.preventDefault();
-        const credentials = { username, password };
+        const credentials = { username, password, nickname };  // 닉네임 추가
         fetchJoin(credentials);
     }
 
-    
     return (
         <div className="join">
             <h1>Join</h1>
             <form onSubmit={joinHandler}>
                 <p><span className='label'>Username</span><input className='input-class' type="text" name="username" value={username} placeholder="username" onChange={(e) => setUsername(e.target.value)} /></p>
                 <p><span className='label'>Password</span><input className='input-class' type="password" autoComplete="off" name="password" placeholder="password" onChange={(e) => setPassword(e.target.value)} /></p>
+                <p><span className='label'>Nickname</span><input className='input-class' type="text" name="nickname" value={nickname} placeholder="nickname" onChange={(e) => setNickname(e.target.value)} /></p> {/* 닉네임 입력 */}
                 <input type="submit" value="Join" className="form-btn" />
             </form>
         </div>
-    );   
+    );
 }
 
 export default JoinForm;

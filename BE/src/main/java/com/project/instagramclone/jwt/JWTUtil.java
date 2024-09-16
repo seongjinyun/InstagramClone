@@ -6,10 +6,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Map;
 
 // JWT 발급 및 검증을 위한 클래스
 // LoginFIlter에서 주입받아 로그인 성공 시 사용
@@ -37,6 +40,10 @@ public class JWTUtil {
         return getPayload(token).get("username", String.class);
     }
 
+    public String getNickname(String token){
+        return getPayload(token).get("nickname", String.class);
+    }
+
     public String getRole(String token){
         return getPayload(token).get("role", String.class);
     }
@@ -45,28 +52,30 @@ public class JWTUtil {
         return getPayload(token).get("category", String.class);
     }
 
-    public Boolean isExpired(String token){
-        return getPayload(token).getExpiration().before(new Date());
-
-//        Date now = new Date(System.currentTimeMillis());
-//        Date expiration = Jwts.parserBuilder()
-//                .setSigningKey(key)
-//                .build()
-//                .parseClaimsJws(token)
-//                .getBody()
-//                .getExpiration();
-//
-//        System.out.println("현재 시간: " + now);
-//        System.out.println("JWT 만료 시간: " + expiration);
-//
-//        return expiration.before(now);
+    public boolean validateToken(String token, Object user) {
+        final String username = getUsername(token);  // 토큰에서 username 추출
+        if (user instanceof UserDetails) {
+            return (username.equals(((UserDetails) user).getUsername()) && !isExpired(token)); // username 일치 여부 및 만료 여부 확인
+        } else if (user instanceof OAuth2User) {
+            Map<String, Object> attributes = ((OAuth2User) user).getAttributes();
+            if (attributes == null || attributes.get("username") == null) {
+                // OAuth2User의 attributes가 null인 경우 예외 처리
+                return false;
+            }
+            return (username.equals(attributes.get("username")) && !isExpired(token));
+        }
+        return false;
     }
 
+    public Boolean isExpired(String token){
+        return getPayload(token).getExpiration().before(new Date());
+    }
 
-    public String createJwt(String category, String username, String role, Long expiredMs) {
+    public String createJwt(String category, String username, String nickname, String role, Long expiredMs) {
         Claims claims = Jwts.claims();
         claims.put("category", category);
         claims.put("username", username);
+        claims.put("nickname", nickname);
         claims.put("role", role);
 
         return Jwts.builder()
