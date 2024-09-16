@@ -24,7 +24,7 @@ public class FileStorageService {
             try {
                 Files.createDirectories(path);
             } catch (IOException e) {
-                throw new RuntimeException("Could not create upload directory!", e);
+                throw new RuntimeException("디렉토리 생성 실패", e);
             }
         }
     }
