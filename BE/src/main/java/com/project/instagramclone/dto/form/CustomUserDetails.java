@@ -1,12 +1,14 @@
 package com.project.instagramclone.dto.form;
 
 import com.project.instagramclone.entity.form.FormUserEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+@Slf4j
 public class CustomUserDetails implements UserDetails  {
 
     private final FormUserEntity formUserEntity;
@@ -30,6 +32,10 @@ public class CustomUserDetails implements UserDetails  {
     @Override
     public String getUsername() {
         return formUserEntity.getUsername();
+    }
+
+    public String getNickname() {
+        return formUserEntity.getNickname();
     }
 
     @Override

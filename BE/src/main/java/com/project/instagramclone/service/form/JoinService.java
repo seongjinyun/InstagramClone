@@ -6,9 +6,11 @@ import com.project.instagramclone.entity.member.MemberEntity;
 import com.project.instagramclone.repository.form.FormUserRepository;
 import com.project.instagramclone.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class JoinService {
@@ -34,8 +36,8 @@ public class JoinService {
                 .builder()
                 .username(joinDto.getUsername())
                 .password(bCryptPasswordEncoder.encode(joinDto.getPassword()))
-//                .nickname(joinDto.getNickname())
-//                .email(joinDto.getEmail())
+                .nickname(joinDto.getNickname())
+                .email(joinDto.getEmail())
                 .activated(true)
                 .role("ROLE_USER")
                 .memberEntity(memberEntity) // MemberEntity와 연결

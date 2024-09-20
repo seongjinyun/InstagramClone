@@ -8,14 +8,15 @@ import lombok.Setter;
 @Setter
 public class OAuth2UserDto {
     private String username;
+    private String nickname;
     private String name;
     private String email;
     private String role;
 
     @Builder
-    public OAuth2UserDto(String username, String name, String email, String role) {
+    public OAuth2UserDto(String username, String nickname, String email, String role) {
         this.username = username;
-        this.name = name;
+        this.nickname = nickname;
         this.email = email;
         this.role = role;
     }

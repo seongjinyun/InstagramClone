@@ -23,7 +23,7 @@ public class FollowsEntity {
 
     // 팔로우를 당한 사람
     @ManyToOne
-    @JoinColumn(name = "member_id", referencedColumnName = "memberId")
-    private MemberEntity member;
+    @JoinColumn(name = "following_id", referencedColumnName = "memberId")
+    private MemberEntity following;
 
 }

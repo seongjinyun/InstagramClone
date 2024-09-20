@@ -7,6 +7,7 @@ import Admin from '../pages/Admin';
 import Logout from '../pages/Logout';
 import Follow from '../pages/Follow';
 import Post from '../pages/Post';
+import SetNickname from '../pages/SetNickname';
 import { useLogin } from '../contexts/AuthContext';
 
 const MyRoutes = () => {
@@ -22,6 +23,7 @@ const MyRoutes = () => {
       {isLoggedIn && <Route path="/post" element={<Post />} />}
       <Route path="/admin" element={<Admin />} />
       <Route path="/oauth2-jwt-header" element={<OAuth2Redirect />} />
+      <Route path="/set-nickname" element={<SetNickname />} />
     </Routes>
   );
 }

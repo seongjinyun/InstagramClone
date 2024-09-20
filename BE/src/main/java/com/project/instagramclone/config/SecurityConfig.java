@@ -6,7 +6,9 @@ import com.project.instagramclone.handler.CustomOAuth2SuccessHandler;
 import com.project.instagramclone.jwt.JWTFilter;
 import com.project.instagramclone.jwt.JWTUtil;
 import com.project.instagramclone.repository.token.RefreshRepository;
+import com.project.instagramclone.service.form.CustomUserDetailsService;
 import com.project.instagramclone.service.oauth2.CustomOAuth2UserService;
+import com.project.instagramclone.service.oauth2.OAuth2UserService;
 import com.project.instagramclone.service.token.RefreshTokenService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,7 +45,9 @@ import java.util.Collections;
 public class SecurityConfig {
 
     private final JWTUtil jwtUtil;
+    private final CustomUserDetailsService customUserDetailsService;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2UserService oAuth2UserService;
     private final RefreshTokenService refreshTokenService;
     private final RefreshRepository refreshRepository;
     public static final String[] swaggerArray = {
@@ -74,7 +78,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityfilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityfilterChain(HttpSecurity http, CustomUserDetailsService customUserDetailsService) throws Exception {
         http
                 // token을 사용하는 방식이기 때문에 csrf를 disable
                 // JWT는 세션을 stateless 하게 관리함
@@ -134,6 +138,7 @@ public class SecurityConfig {
                                 "/api/v1/join",
                                 "/logout",
                                 "/api/v1/oauth2-jwt-header",
+                                "/set-nickname",
                                 "/error"
                         ).permitAll() // 허용
                         .requestMatchers(swaggerArray).permitAll() // swagger 페이지 접근 허용
@@ -151,7 +156,7 @@ public class SecurityConfig {
                 )
 
                 // JwtFilter 등록
-                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JWTFilter(jwtUtil, customUserDetailsService, oAuth2UserService), UsernamePasswordAuthenticationFilter.class)
 
                 // custom logout filter 등록
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class)

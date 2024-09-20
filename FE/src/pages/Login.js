@@ -34,13 +34,14 @@ const LoginForm = () => {
                     alert('Access Token을 찾을 수 없습니다.');
                 }
 
-                const data = await response.json();
-                const { name } = data;
+                const data = await response.json(); // 응답 데이터에서 토큰 및 사용자 정보 추출
+                const { nickname, username } = data;
 
-                window.localStorage.setItem("name", name);
+                window.localStorage.setItem("username", username);
+                window.localStorage.setItem("nickname", nickname);
 
                 setIsLoggedIn(true);
-                setLoginUser(name);
+                setLoginUser(nickname);
 
                 // 로그인 완료 후, 이전 요청이 존재하면 이전 요청으로 이동
                 navigate(prevUrl, { replace: true });
