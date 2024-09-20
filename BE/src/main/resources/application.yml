@@ -57,6 +57,12 @@ spring:
     ansi:
       enabled: always
 
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: post
+
 # log
 logging:
   level:
@@ -65,6 +71,7 @@ logging:
     org.springframework: DEBUG
     org.hibernate.type: trace
     org.springframework.security: DEBUG
+    org.springframework.data.mongodb: DEBUG
 
 # mustache 한글 깨짐
 server:
@@ -91,7 +98,3 @@ springdoc:
   model-and-view-allowed: true
   paths-to-match:
     - /api/v1/**
-
-data:
-  mongodb:
-    uri: mongodb://mongo:1234@localhost:27017/post?authSource=post
