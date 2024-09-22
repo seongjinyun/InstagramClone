@@ -1,6 +1,7 @@
 package com.project.instagramclone.dto.oauth2;
 
 import com.project.instagramclone.entity.oauth2.OAuth2UserEntity;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,9 @@ import java.util.Map;
 public class CustomOAuth2User implements OAuth2User, UserDetails {
 
     private final OAuth2UserDto oAuth2UserDto;
+
+    @Getter
+    private final Long memberId;
 
     // 통일 x -> return null
     @Override
@@ -46,4 +50,5 @@ public class CustomOAuth2User implements OAuth2User, UserDetails {
     public String getEmail(){
         return oAuth2UserDto.getEmail();
     }
+
 }

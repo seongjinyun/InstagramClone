@@ -17,6 +17,7 @@ public class OAuth2UserDto {
     public OAuth2UserDto(String username, String nickname, String email, String role) {
         this.username = username;
         this.nickname = nickname;
+        // this.name = name;
         this.email = email;
         this.role = role;
     }

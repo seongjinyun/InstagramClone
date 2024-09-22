@@ -11,6 +11,8 @@ const NavBar = () => {
             {isLoggedIn && <Link to="/logout">Logout</Link>}
             {isLoggedIn && <Link to="/follow">Follow</Link>}
             {isLoggedIn && <Link to="/post">Post</Link>}
+            {isLoggedIn && <Link to="/edit-account">Edit Account</Link>}
+            {isLoggedIn && <Link to="/change-password">Change Password</Link>}
         </nav>
     );
 }

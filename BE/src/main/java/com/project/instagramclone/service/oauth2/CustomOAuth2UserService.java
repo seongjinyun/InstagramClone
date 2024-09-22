@@ -53,7 +53,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String role = "ROLE_USER";
 
         // DB save
-        saveUser(response, username, role);
+        OAuth2UserEntity oAuth2UserEntity = saveUser(response, username, role);
+        Long memberId = oAuth2UserEntity.getMemberEntity().getMemberId();
 
         // Entity 목적 순수하게 유지하기 위해서 dto 로 전달..
         OAuth2UserDto oAuth2UserDto = OAuth2UserDto.builder()
@@ -63,7 +64,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .role(role)
                 .build();
 
-        customOAuth2User = new CustomOAuth2User(oAuth2UserDto);
+        //  customOAuth2User = new CustomOAuth2User(oAuth2UserDto);
+        // CustomOAuth2User에 memberId 설정
+        customOAuth2User = new CustomOAuth2User(oAuth2UserDto, memberId);
 
         // 서버 내부에서 사용하기 위한 인증 정보
         return (OAuth2User) customOAuth2User;
@@ -73,7 +76,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
      * 이미 존재하는 경우 update
      * 존재하지 않는 경우 save
      */
-    private void saveUser(OAuth2Response response, String username, String role) {
+    private OAuth2UserEntity saveUser(OAuth2Response response, String username, String role) {
         // DB 조회
         Optional<OAuth2UserEntity> isExist = oAuth2UserRepository.findByUsername(username);
 
@@ -83,7 +86,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             OAuth2UserEntity user = isExist.get();
             user.setNickname(response.getName());
-            oAuth2UserRepository.save(user);
+            user.setEmail(response.getEmail());
+            return oAuth2UserRepository.save(user);
         } else {
             MemberEntity memberEntity = new MemberEntity();
             memberEntity = memberRepository.save(memberEntity);
@@ -95,7 +99,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .role(role)
                     .memberEntity(memberEntity)
                     .build();
-            oAuth2UserRepository.save(oAuth2UserEntity);
+            return oAuth2UserRepository.save(oAuth2UserEntity);
         }
     }
 }

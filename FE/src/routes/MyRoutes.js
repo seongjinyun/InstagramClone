@@ -8,6 +8,8 @@ import Logout from '../pages/Logout';
 import Follow from '../pages/Follow';
 import Post from '../pages/Post';
 import SetNickname from '../pages/SetNickname';
+import EditAccount from '../pages/EditAccount';
+import ChangePassword from '../pages/ChangePassword';
 import { useLogin } from '../contexts/AuthContext';
 
 const MyRoutes = () => {
@@ -21,6 +23,8 @@ const MyRoutes = () => {
       {isLoggedIn && <Route path="/logout" element={<Logout />} />}
       {isLoggedIn && <Route path="/follow" element={<Follow />} />}
       {isLoggedIn && <Route path="/post" element={<Post />} />}
+      {isLoggedIn && <Route path="/edit-account" element={<EditAccount />} />}
+      {isLoggedIn && <Route path="/change-password" element={<ChangePassword />} />}
       <Route path="/admin" element={<Admin />} />
       <Route path="/oauth2-jwt-header" element={<OAuth2Redirect />} />
       <Route path="/set-nickname" element={<SetNickname />} />

@@ -66,7 +66,6 @@ public class FollowController {
         } catch (IllegalArgumentException e) {
             // formUser에서 닉네임을 찾지 못하면 OAuth2User에서 닉네임으로 사용자 찾기
             username = oAuth2UserService.getUsernameByNickname(nickname);
-
             // OAuth2User에서도 사용자 정보를 찾지 못하거나, 인증된 사용자와 일치하지 않으면 접근 금지
             if (username == null || !username.equals(authentication.getName())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -91,7 +90,6 @@ public class FollowController {
         } catch (IllegalArgumentException e) {
             // formUser에서 닉네임을 찾지 못하면 OAuth2User에서 닉네임으로 사용자 찾기
             username = oAuth2UserService.getUsernameByNickname(nickname);
-
             // OAuth2User에서도 사용자 정보를 찾지 못하거나, 인증된 사용자와 일치하지 않으면 접근 금지
             if (username == null || !username.equals(authentication.getName())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
