@@ -7,6 +7,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document(collection = "postImage")
 @Getter
 @Setter
@@ -16,6 +18,6 @@ public class PostImage {
     private String id;
     @Indexed
     private String postId; // posts 컬렉션의 ID를 참조 (비식별 관계)
-    private String mediaUrl; // 파일 URL
+    private List<String> mediaUrl; // 파일 URL
 
 }
