@@ -56,6 +56,9 @@ public class PostsService {
         posts.setRegdate(System.currentTimeMillis()); // 게시글 등록 시간
 
         Posts savedPost = postRepository.save(posts);
+        if(savedPost == null) {
+            throw new IllegalStateException("게시글 저장 실패");
+        }
 
         // 이미지 URL 리스트 생성
         List<String> mediaUrls = new ArrayList<>();

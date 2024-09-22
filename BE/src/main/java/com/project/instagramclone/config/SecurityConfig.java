@@ -138,7 +138,11 @@ public class SecurityConfig {
                                 "/api/v1/join",
                                 "/logout",
                                 "/api/v1/oauth2-jwt-header",
+
                                 "/set-nickname",
+                                "/api/v1/user/update",
+                                "/api/v1/user/change-password",
+
                                 "/error"
                         ).permitAll() // 허용
                         .requestMatchers(swaggerArray).permitAll() // swagger 페이지 접근 허용

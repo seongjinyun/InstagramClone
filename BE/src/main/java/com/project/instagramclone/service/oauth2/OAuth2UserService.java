@@ -35,13 +35,17 @@ public class OAuth2UserService {
     public CustomOAuth2User findByUsername(String username) {
         OAuth2UserEntity entity = oAuth2UserRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("OAuth2 사용자 정보를 찾을 수 없습니다."));
+
         OAuth2UserDto userDto = OAuth2UserDto.builder()
                 .username(entity.getUsername())
                 .nickname(entity.getNickname())
                 .email(entity.getEmail())
                 .role(entity.getRole())
                 .build();
-        return new CustomOAuth2User(userDto);
+
+        Long memberId = entity.getMemberEntity().getMemberId();
+
+        return new CustomOAuth2User(userDto, memberId);
     }
 
     public int updateNickname(String username, String nickname) {

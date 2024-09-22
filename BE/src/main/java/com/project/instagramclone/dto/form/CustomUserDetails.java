@@ -38,6 +38,10 @@ public class CustomUserDetails implements UserDetails  {
         return formUserEntity.getNickname();
     }
 
+    public Long getMemberId() {
+        return formUserEntity.getMemberEntity().getMemberId();
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         // return UserDetails.super.isAccountNonExpired();
