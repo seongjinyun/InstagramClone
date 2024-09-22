@@ -47,58 +47,69 @@ public class PostsService {
         String actualToken = token.replace("Bearer ", "");
 
         // 토큰에서 정보 추출
-        String userName = jwtUtil.getUsername(actualToken);
+        String nickname = jwtUtil.getNickname(actualToken);
         String role = jwtUtil.getRole(actualToken); // 필요할지 ?
 
         Posts posts = new Posts();
         posts.setContent(postDTO.getContent());
-        posts.setUserName(userName);
+        posts.setNickname(nickname);
         posts.setRegdate(System.currentTimeMillis()); // 게시글 등록 시간
 
         Posts savedPost = postRepository.save(posts);
 
-        // 이미지 URL 저장 및 Post와 연결
+        // 이미지 URL 리스트 생성
+        List<String> mediaUrls = new ArrayList<>();
+
+        // 각 파일을 저장하고 그 URL을 리스트에 추가
         for (MultipartFile file : mediaFiles) {
             String fileUrl = fileStorageService.saveFile(file);
-
-            PostImage postImage = new PostImage();
-            postImage.setPostId(savedPost.getId());
-            postImage.setMediaUrl(fileUrl);
-            postImageRepository.save(postImage);
+            mediaUrls.add(fileUrl);
         }
+
+        // PostImage 객체에 이미지 URL 리스트 저장
+        PostImage postImage = new PostImage();
+        postImage.setPostId(savedPost.getId());
+        postImage.setMediaUrl(mediaUrls); // List<String>로 저장
+        postImageRepository.save(postImage);
+
         return savedPost;
     }
 
     //팔로우 한 계정의 게시글 조회
-    public List<Posts> getPosts(String token) {
-        System.out.println("JWT Token: " + token);
+    public List<PostDTO> getPosts(String token) {
 
-        String actualToken = token.replace("bearer", "").trim();
-        String userName = jwtUtil.getUsername(actualToken);
-
-        // Debugging 로그 추가
-        System.out.println("Username from token: " + userName);
+        String actualToken = token.replace("Bearer", "");
+        String nickname = jwtUtil.getNickname(actualToken);
 
         //팔로우 중인 멤버들을 가져와서
-        List<FollowDto> followingUserDto = followService.getFollowing(userName);
-
-        // Debugging 로그 추가
-        System.out.println("Following users: " + followingUserDto);
+        List<FollowDto> followingUserDto = followService.getFollowing(nickname);
 
         // followingUserDto에서 memberUsername 값을 추출하여 List<String>에 저장
         List<String> followingUserList = followingUserDto.stream()
-                .map(FollowDto::getMemberUsername)  // FollowDto에서 memberUsername 추출
+                .map(FollowDto::getFollowingNickname)  // FollowDto에서 memberUsername 추출
                 .collect(Collectors.toList());
 
-        // Debugging 로그 추가
-        System.out.println("Usernames to query: " + followingUserList);
-
         // 추출된 사용자들의 게시글 조회
-        List<Posts> postList = postRepository.findPostsByUserNameIn(followingUserList);
+        List<Posts> postList = postRepository.findPostsByNicknameIn(followingUserList);
 
-        // Debugging 로그 추가
-        System.out.println("Posts found: " + postList);
+        // 각 게시글에 연결된 이미지 파일을 조회하고 PostDTO에 변환하여 반환
+        List<PostDTO> postDTOList = postList.stream().map(post -> {
+            // 게시글에 연결된 이미지 조회
+            List<PostImage> postImages = postImageRepository.findByPostId(post.getId());
 
-        return postList;  // 조회된 게시글 리스트 반환
+            // 각 PostImage에서 mediaUrl 리스트들을 모두 합침
+            List<String> mediaUrls = postImages.stream()
+                    .flatMap(postImage -> postImage.getMediaUrl().stream())  // 각 PostImage에서 mediaUrl 리스트 추출 후 flatMap으로 병합
+                    .collect(Collectors.toList());
+
+            // PostDTO 생성
+            return PostDTO.builder()
+                    .content(post.getContent())
+                    .mediaUrls(mediaUrls) // 이미지 파일 URL 리스트 추가
+                    .writer(post.getNickname()) // 작성자 추가
+                    .build();
+        }).collect(Collectors.toList());
+
+        return postDTOList;  // 조회된 게시글 리스트 반환
     }
 }

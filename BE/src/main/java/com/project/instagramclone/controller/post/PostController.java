@@ -41,8 +41,8 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public ResponseEntity<List<Posts>> getPost(@RequestHeader("Authorization") String token){
-        List<Posts> posts = postsService.getPosts(token);
+    public ResponseEntity<List<PostDTO>> getPost(@RequestHeader("Authorization") String token){
+        List<PostDTO> posts = postsService.getPosts(token);
         return ResponseEntity.ok(posts);
     }
 }

@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Posts {
     @Id
     private String id;
-    private String userName; // member_id에서 가져오는 작성자 명
+    private String nickname; // member_id에서 가져오는 작성자 명
     private String content; // 내용
 
     //username으로 조
