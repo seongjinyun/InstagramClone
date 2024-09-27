@@ -63,6 +63,13 @@ spring:
       port: 27017
       database: post
 
+  cloud:
+    aws:
+      s3:
+        bucket: instagram-clonecoding-project
+      stack.auto: false
+      region.static: ap-northeast-2
+      credentials:
 # log
 logging:
   level:

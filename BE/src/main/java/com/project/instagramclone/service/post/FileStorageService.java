@@ -1,5 +1,9 @@
 package com.project.instagramclone.service.post;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,24 +16,15 @@ import java.util.UUID;
 
 //파일 저장 서비스
 @Service
+@RequiredArgsConstructor
 public class FileStorageService {
-    // 파일을 저장할 경로
-    private final String UPLOAD_DIR = "C:/Study/Images"; // 실제 경로로 수정 필요
+    private final AmazonS3 amazonS3;
 
+    // S3 버킷 이름 (application.yml에서 가져옴)
+    @Value("${spring.cloud.aws.s3.bucket}")
+    private String bucketName;
 
-    public FileStorageService() {
-        // 애플리케이션 시작 시 디렉터리가 존재하지 않으면 생성
-        Path path = Paths.get(UPLOAD_DIR);
-        if (!Files.exists(path)) {
-            try {
-                Files.createDirectories(path);
-            } catch (IOException e) {
-                throw new RuntimeException("디렉토리 생성 실패", e);
-            }
-        }
-    }
-
-    // 파일 저장 메서드
+    // 파일 저장 메서드 (S3에 업로드)
     public String saveFile(MultipartFile file) throws IOException {
         // 원본 파일명 가져오기
         String originalFilename = file.getOriginalFilename();
@@ -37,13 +32,15 @@ public class FileStorageService {
         // 파일이름에 UUID 추가하여 유니크한 이름으로 변경
         String newFilename = UUID.randomUUID().toString() + "_" + originalFilename;
 
-        // 파일 저장 경로 설정
-        Path filePath = Paths.get(UPLOAD_DIR, newFilename);
+        // S3에 파일 업로드를 위한 메타데이터 설정
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(file.getSize());
+        metadata.setContentType(file.getContentType());
 
-        // 파일 저장
-        Files.copy(file.getInputStream(), filePath);
+        // S3에 파일 업로드
+        amazonS3.putObject(bucketName, newFilename, file.getInputStream(), metadata);
 
-        // 저장된 파일 경로 반환 (URL 혹은 상대경로)
-        return filePath.toString();
+        // 업로드한 파일의 S3 URL 반환
+        return amazonS3.getUrl(bucketName, newFilename).toString();
     }
 }

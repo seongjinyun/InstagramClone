@@ -40,9 +40,26 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    //팔로우 중인 회원들의 모든 게시글 조회
     @GetMapping("/posts")
     public ResponseEntity<List<PostDTO>> getPost(@RequestHeader("Authorization") String token){
-        List<PostDTO> posts = postsService.getPosts(token);
-        return ResponseEntity.ok(posts);
+        try {
+            List<PostDTO> posts = postsService.getPosts(token);
+
+            return ResponseEntity.ok(posts);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //글 상세조회
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostDTO> getPostById(@PathVariable String postId){
+        PostDTO post = postsService.getPostById(postId);
+        if (post != null) {
+            return new ResponseEntity<>(post, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
