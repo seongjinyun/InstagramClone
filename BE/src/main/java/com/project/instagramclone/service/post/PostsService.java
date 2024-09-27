@@ -10,6 +10,7 @@ import com.project.instagramclone.repository.post.PostRepository;
 import com.project.instagramclone.service.follows.FollowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -18,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -79,7 +81,8 @@ public class PostsService {
     }
 
     //팔로우 한 계정의 게시글 조회
-    public List<PostDTO> getPosts(String token) {
+    @Transactional
+    public List<PostDTO> getPosts(String token) throws IOException {
 
         String actualToken = token.replace("Bearer", "");
         String nickname = jwtUtil.getNickname(actualToken);
@@ -107,6 +110,7 @@ public class PostsService {
 
             // PostDTO 생성
             return PostDTO.builder()
+                    .postId(post.getId())
                     .content(post.getContent())
                     .mediaUrls(mediaUrls) // 이미지 파일 URL 리스트 추가
                     .writer(post.getNickname()) // 작성자 추가
@@ -114,5 +118,24 @@ public class PostsService {
         }).collect(Collectors.toList());
 
         return postDTOList;  // 조회된 게시글 리스트 반환
+    }
+
+    //게시글 상세 보기
+    public PostDTO getPostById(String postId){
+
+        Posts post = postRepository.findById(postId).orElse(null);
+
+        List<PostImage> postImages = postImageRepository.findByPostId(Objects.requireNonNull(post).getId()); //post 가 null이라면 예외처리
+
+        List<String> mediaUrls = postImages.stream()
+                .flatMap(postImage -> postImage.getMediaUrl().stream())  // 각 PostImage에서 mediaUrl 리스트 추출 후 flatMap으로 병합
+                .collect(Collectors.toList());
+
+        return PostDTO.builder()
+                .postId(post.getId())
+                .content(post.getContent())
+                .mediaUrls(mediaUrls) // 이미지 파일 URL 리스트 추가
+                .writer(post.getNickname()) // 작성자 추가
+                .build();
     }
 }

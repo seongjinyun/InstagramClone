@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PostDTO {
 
+    private String postId; // 게시글 id
     private String content; // 글 내용
     private List<MultipartFile> mediaFiles; // 파일명 리스트
     // 게시글 조회 시 사용

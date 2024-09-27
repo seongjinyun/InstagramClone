@@ -4,6 +4,10 @@ import React, { useEffect, useState } from 'react';
 const Home = () => {
     const { isLoggedIn, loginUser, setLoginUser } = useLogin();
     const [posts, setPosts] = useState([]);
+    
+    // S3 버킷 정보
+    const s3BucketName = "instagram-clonecoding-project"; // 실제 S3 버킷 이름
+    const region = "ap-northeast-2"; // 실제 S3 버킷 리전
 
     useEffect(() => {
         const storedNickname = window.localStorage.getItem("nickname");
@@ -42,33 +46,39 @@ const Home = () => {
         <div>
             <h1>Home</h1>
             {isLoggedIn && <span>{loginUser}님 환영합니다.</span>}
+            <hr></hr>
             {isLoggedIn && posts.length > 0 ? (
                 <div>
                     {posts.map((post, index) => (
                         <div key={index} className="post">
-                            <p>{post.content}</p>
-                            {post.mediaUrls && post.mediaUrls.map((url, idx) => {
-                                // 경로 변환: 백슬래시를 슬래시로 변경
-                                const formattedUrl = url.replace(/\\/g, '/'); 
-                                const isVideo = formattedUrl.endsWith('.mp4') || formattedUrl.endsWith('.mov'); // 비디오 파일 확장자 확인
-                                return isVideo ? (
-                                    <video key={idx} controls>
-                                        <source src={`http://localhost:8080/images/${formattedUrl.split('/').pop()}`} type="video/mp4" />
-                                        Your browser does not support the video tag.
-                                    </video>
-                                ) : (
-                                    <img key={idx} src={`http://localhost:8080/images/${formattedUrl.split('/').pop()}`} alt={`Media ${idx}`} />
-                                );
-                            })}
                             <p>작성자: {post.writer}</p>
+                            <p>{post.content}</p>
+                            <div className="media-container">
+                                {post.mediaUrls && post.mediaUrls.map((url, idx) => {
+                                    const isVideo = url.endsWith('.mp4') || url.endsWith('.mov'); // 비디오 파일 확장자 확인
+                                    const s3Url = `${url}`; // S3 URL 구성
+    
+                                    return isVideo ? (
+                                        <video key={idx} controls style={{ width: '200px', height: '200px', objectFit: 'contain' }}>
+                                            <source src={s3Url} type="video/mp4" />
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    ) : (
+                                        <img key={idx} src={s3Url} alt={`Media ${idx}`} style={{ width: '200px', height: '200px', objectFit: 'contain' }} />
+                                    );
+                                })}
+                            </div>
+                                <hr></hr>
                         </div>
                     ))}
                 </div>
+                
             ) : (
                 isLoggedIn && <p>업로드된 게시글이 없습니다.</p> // 게시글이 없을 경우 메시지 출력
             )}
         </div>
     );
+    
 };
 
 export default Home;
