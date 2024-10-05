@@ -39,7 +39,6 @@ public class PostsService {
     public Posts savePost(String token, PostDTO postDTO) throws IOException {
         // mediaFiles와 content를 DTO로 받아옴
         List<MultipartFile> mediaFiles = postDTO.getMediaFiles();
-        String content = postDTO.getContent();
 
         if (mediaFiles.size() > 10) {
             throw new IllegalArgumentException("10개 이상의 파일은 업로드 불가능 합니다");

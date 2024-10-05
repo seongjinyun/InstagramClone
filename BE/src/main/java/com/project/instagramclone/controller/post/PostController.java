@@ -53,7 +53,7 @@ public class PostController {
     }
 
     //글 상세조회
-    @GetMapping("/{postId}")
+    @GetMapping("/post/{postId}")
     public ResponseEntity<PostDTO> getPostById(@PathVariable String postId){
         PostDTO post = postsService.getPostById(postId);
         if (post != null) {

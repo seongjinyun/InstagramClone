@@ -12,7 +12,7 @@ public class CommentDTO {
 
     private String postId;
     private String comment;
-    private String parentComment;
+    private String parentCommentId;
     private String nickname; // 댓글 작성자 - nickname
 
 }
